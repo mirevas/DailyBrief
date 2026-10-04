@@ -1188,6 +1188,134 @@ export function renderHtml(
     color: var(--muted);
     font-size: 0.82rem;
   }
+    /* ===== mobile UX ===== */
+  @media (max-width: 719px) {
+    main {
+      padding: 1.35rem 1rem 3rem;
+    }
+
+    header.report-header {
+      margin-bottom: 0.7rem;
+    }
+
+    h1.report-title {
+      font-size: 2rem;
+      margin: 0.3rem 0 0.75rem;
+    }
+
+    .archive-link {
+      margin-bottom: 0.65rem;
+      font-size: 0.9rem;
+      padding-bottom: 0.15rem;
+    }
+
+    /*
+     * Horizontal swipe navigation on mobile.
+     * Prevent long tab rows from wrapping into multiple lines.
+     */
+    .tabs,
+    .sub-tabs,
+    .source-tabs,
+    .trading-group-tabs {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      overscroll-behavior-x: contain;
+    }
+
+    .tabs::-webkit-scrollbar,
+    .sub-tabs::-webkit-scrollbar,
+    .source-tabs::-webkit-scrollbar,
+    .trading-group-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab,
+    .sub-tab,
+    .source-tab,
+    .trading-group-tab {
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    .tabs {
+      margin-top: 0.8rem;
+      gap: 0.15rem;
+    }
+
+    .tab {
+      padding: 0.7rem 0.85rem;
+      font-size: 0.92rem;
+      min-height: 44px;
+    }
+
+    .sub-tabs {
+      margin: 0.75rem 0;
+      gap: 0.35rem;
+      padding-bottom: 0.15rem;
+    }
+
+    .sub-tab {
+      min-height: 44px;
+      padding: 0.55rem 0.9rem;
+      font-size: 0.88rem;
+    }
+
+    .source-tabs {
+      margin: 0.7rem 0 1rem;
+      padding-bottom: 0.55rem;
+    }
+
+    .source-tab {
+      min-height: 40px;
+      padding: 0.45rem 0.8rem;
+    }
+
+    .trading-group-tabs {
+      padding-bottom: 0.15rem;
+    }
+
+    .trading-group-tab {
+      min-height: 44px;
+    }
+
+    .article {
+      padding: 0.9rem 0;
+    }
+
+    .article-title {
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .article-excerpt,
+    .article-summary {
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+
+    .article-summary {
+      padding: 0.65rem 0.8rem;
+    }
+
+    .crypto-widgets {
+      gap: 0.45rem;
+    }
+
+    .crypto-widget {
+      padding: 0.65rem 0.55rem;
+    }
+
+    .ticker-card {
+      padding: 0.8rem 0.85rem;
+    }
+
+    footer {
+      margin-top: 2rem;
+    }
+  }
 </style>
 </head>
 <body>
