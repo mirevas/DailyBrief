@@ -115,9 +115,20 @@
    - `REPORT_TZ` —— IANA 时区名（默认 UTC），例 `Asia/Shanghai` / `America/Los_Angeles`。**同时影响触发时间和日期标签**
    - `REPORT_HOUR` —— 触发的小时（基于 `REPORT_TZ`），默认 `8`（早 8 点）。逗号分隔可多次触发，如 `8,18` = 早 8 + 晚 6
    - `REPORT_DAYS` —— 触发的星期（cron 风格，`0`=周日 ... `6`=周六），默认 `*`（每天）。例 `1-5` = 工作日；`1,3,5` = 周一三五
+   - （可选）手机推送：在 Secrets 添加 `TELEGRAM_BOT_TOKEN`，在 Variables 添加 `TELEGRAM_CHAT_ID`。使用自定义域名时，再添加 `REPORT_URL`（报告首页 URL）
 6. **Actions 标签 → 选 "Daily Brief" workflow → Run workflow** 手动触发一次
 
 跑完后报告在 `https://<你的用户名>.github.io/<repo-名字>/`。之后**默认每天 `REPORT_TZ` 时区的 08:00 自动更新**（不设 `REPORT_TZ` 就是 UTC 08:00）。
+
+#### 📲 部署完成后推送到手机（可选）
+
+GitHub Actions 成功发布到 Pages 后会给 Telegram 发一条带当日头条和报告链接的消息；未配置 Telegram 时会自动跳过。
+
+1. 在 Telegram 联系 [@BotFather](https://t.me/BotFather)，运行 `/newbot` 创建 bot，并把获得的 token 保存为仓库 **Secret** `TELEGRAM_BOT_TOKEN`。
+2. 在手机上打开新 bot 并发送 `/start`，然后通过 Telegram Bot API 的 `getUpdates` 获取自己的 `chat.id`；把它保存为仓库 **Variable** `TELEGRAM_CHAT_ID`。群聊推送则先把 bot 加入群组，并使用群组 chat ID。
+3. 在 **Settings → Secrets and variables → Actions** 配置以上值。自定义域名用户还需设置 `REPORT_URL`，默认链接使用 `https://<owner>.github.io/<repo>/`。
+
+之后每次 Actions 成功部署都会推送。通知步骤在 Pages 发布之后执行；如果 Telegram 服务或配置出错，报告仍已发布，但该 workflow run 会显示失败，便于发现通知故障。实现使用 Telegram 官方 [`sendMessage`](https://core.telegram.org/bots/api#sendmessage) HTTP API。
 
 > ⏰ **触发机制**：GitHub Actions 的 cron 只接受 UTC，所以工作流 cron 设置为**每小时探测两次**，里面有一个 `gate` 任务用 `REPORT_TZ` 把当前小时和 `REPORT_HOUR/REPORT_DAYS` 对照——匹配才往下跑 build，否则秒退。这样不论你在哪个时区都能精准命中本地时间，**夏令时也自动跟着切换**（IANA 时区数据库内置）。
 
@@ -647,9 +658,14 @@ The registry currently contains 53 sources, with 26 enabled by default. After lo
    - `REPORT_TZ` — IANA timezone name (default UTC); e.g. `Asia/Shanghai` / `America/Los_Angeles`. **Drives both the trigger time and the date label.**
    - `REPORT_HOUR` — hour(s) to fire in `REPORT_TZ`, default `8` (08:00). Comma-separated for multiple, e.g. `8,18` = 8 AM and 6 PM
    - `REPORT_DAYS` — day-of-week filter (cron-style, `0`=Sunday ... `6`=Saturday), default `*` (every day). E.g. `1-5` = weekdays; `1,3,5` = Mon/Wed/Fri
+   - (Optional) phone notifications: add `TELEGRAM_BOT_TOKEN` as a Secret and `TELEGRAM_CHAT_ID` as a Variable. For a custom domain, also set `REPORT_URL` to the report homepage.
 6. **Actions tab → "Daily Brief" workflow → Run workflow** to trigger manually for the first time
 
 Once the workflow turns green, your report lives at `https://<your-username>.github.io/<repo-name>/`. After that, **it refreshes daily at 08:00 in `REPORT_TZ`** (or 08:00 UTC if `REPORT_TZ` is unset).
+
+#### 📲 Optional Telegram push after deployment
+
+After Pages publishes successfully, the workflow sends a Telegram message with the day's headline and report link. If the Telegram settings are absent, this step is skipped. Create a bot through [@BotFather](https://t.me/BotFather), save its token as the `TELEGRAM_BOT_TOKEN` repository Secret, start a chat with the bot, and save your `chat.id` as the `TELEGRAM_CHAT_ID` repository Variable. For a custom domain, set `REPORT_URL`. The workflow uses Telegram's official [`sendMessage`](https://core.telegram.org/bots/api#sendmessage) API. A Telegram delivery error marks the workflow run as failed even though Pages has already been published.
 
 > ⏰ **How the schedule works**: GitHub Actions cron is UTC-only, so the workflow probes **twice per hour** and uses a `gate` job to check if the current hour in `REPORT_TZ` matches `REPORT_HOUR` / `REPORT_DAYS`. If so, the build job proceeds; otherwise it exits in seconds. This lets the schedule track any local timezone precisely, and **handles DST transitions automatically** (via the IANA tz database).
 

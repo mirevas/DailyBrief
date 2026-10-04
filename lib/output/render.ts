@@ -25,6 +25,13 @@ import {
  */
 const TEXTS_ZH = {
   siteTitle: "每日简报",
+  tabHighlights: "今日重点",
+  todayHighlights: "今日重点速览",
+  topStories: "今日要闻",
+  noHighlights: "今日暂无 AI 重点摘要。",
+  editorNote: "编辑短评",
+  todayKeywords: "关键词",
+  importance: "重要度",
   catTech: "技术动态",
   catFinance: "财经要点",
   catPolitics: "时政观察",
@@ -74,6 +81,13 @@ const TEXTS_ZH = {
 
 const TEXTS_EN: typeof TEXTS_ZH = {
   siteTitle: "Daily Brief",
+  tabHighlights: "Highlights",
+  todayHighlights: "Today's Highlights",
+  topStories: "Top Stories",
+  noHighlights: "No AI highlights are available today.",
+  editorNote: "Editor's Note",
+  todayKeywords: "Keywords",
+  importance: "Importance",
   catTech: "Tech",
   catFinance: "Finance",
   catPolitics: "World",
@@ -525,6 +539,43 @@ function renderRawCategoryPanel(
   return `<nav class="sub-tabs">${subTabs}</nav>\n<div class="sub-contents">${panels}</div>`;
 }
 
+function renderHighlightBrief(b: BriefItem, category: Category): string {
+  const importance = Number.isFinite(b.importance) ? b.importance : 0;
+  return `<article class="brief">
+    <header class="brief-head">
+      <span class="brief-source">${CATEGORY_DIGEST_LABELS[category]} · ${escapeHtml(b.source)}</span>
+      <span class="brief-rank ${importance >= 8 ? "high" : importance >= 5 ? "mid" : "low"}">${STR.importance} ${importance}/10</span>
+    </header>
+    <h3 class="brief-title"><a href="${escapeHtml(b.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(b.title)}</a></h3>
+    <p class="brief-summary">${escapeHtml(b.summary)}</p>
+  </article>`;
+}
+
+function renderHighlights(report: DailyReport): string {
+  const topStories = [
+    ...(report.tech_briefs ?? []).map((brief) => ({ brief, category: "tech" as const })),
+    ...(report.finance_briefs ?? []).map((brief) => ({ brief, category: "finance" as const })),
+    ...(report.politics_briefs ?? []).map((brief) => ({ brief, category: "politics" as const })),
+  ]
+    .sort((a, b) => (b.brief.importance || 0) - (a.brief.importance || 0))
+    .slice(0, 5);
+  const keywords = (report.keywords ?? [])
+    .map((keyword) => `<span class="keyword">#${escapeHtml(keyword)}</span>`)
+    .join("");
+
+  return `<section class="highlights-intro">
+    <span class="eyebrow">${STR.todayHighlights}</span>
+    ${report.hero_headline ? `<h2 class="highlights-headline">${escapeHtml(report.hero_headline)}</h2>` : ""}
+    ${report.daily_overview ? `<p class="overview-text highlights-overview">${escapeHtml(report.daily_overview)}</p>` : `<p class="empty">${STR.noHighlights}</p>`}
+  </section>
+  ${topStories.length > 0 ? `<section class="digest-category">
+    <h2 class="category-header"><span class="category-title">${STR.topStories}</span><span class="category-count">${topStories.length}</span></h2>
+    <div class="brief-list">${topStories.map(({ brief, category }) => renderHighlightBrief(brief, category)).join("\n")}</div>
+  </section>` : ""}
+  ${report.editor_note ? `<section class="editor-card"><span class="eyebrow">${STR.editorNote}</span><p class="editor-text">${escapeHtml(report.editor_note)}</p></section>` : ""}
+  ${keywords ? `<section class="keywords" aria-label="${STR.todayKeywords}">${keywords}</section>` : ""}`;
+}
+
 // ----- top-level renderer -----
 
 export function renderHtml(
@@ -675,6 +726,16 @@ export function renderHtml(
     line-height: 1.65;
     color: var(--fg-soft);
   }
+  .highlights-intro {
+    margin: 0.3rem 0 1.4rem;
+    padding: 1.2rem 1.35rem;
+    background: linear-gradient(135deg, var(--hero-grad-from) 0%, var(--hero-grad-to) 100%);
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--accent);
+    border-radius: 0.6rem;
+  }
+  .highlights-headline { margin: 0.35rem 0 0.55rem; font-size: 1.25rem; line-height: 1.45; }
+  .highlights-overview { font-size: 0.95rem; }
 
   /* ===== primary tabs ===== */
   .tabs {
@@ -1327,14 +1388,18 @@ export function renderHtml(
   </header>
 
   <nav class="tabs" role="tablist">
-    <button class="tab active" data-tab="tech">${CATEGORY_LABELS.tech}<span class="count">${counts.tech}</span></button>
+    <button class="tab active" data-tab="highlights">${STR.tabHighlights}</button>
+    <button class="tab" data-tab="tech">${CATEGORY_LABELS.tech}<span class="count">${counts.tech}</span></button>
     ${trading ? `<button class="tab" data-tab="trading">${STR.catTrading}<span class="count">${trading.tickers.length}</span></button>` : ""}
     <button class="tab" data-tab="politics">${CATEGORY_LABELS.politics}<span class="count">${counts.politics}</span></button>
     <button class="tab" data-tab="finance">${CATEGORY_LABELS.finance}<span class="count">${counts.finance}</span></button>
     ${techCommunitySubs.length > 0 ? `<button class="tab" data-tab="community">${STR.catCommunity}<span class="count">${counts.community}</span></button>` : ""}
   </nav>
 
-  <section class="panel active" data-panel="tech">
+  <section class="panel active" data-panel="highlights">
+    ${renderHighlights(report)}
+  </section>
+  <section class="panel" data-panel="tech">
     ${renderRawCategoryPanel("tech", techMainSubs)}
   </section>
   ${trading ? `<section class="panel" data-panel="trading">${renderTradingPanel(trading)}</section>` : ""}

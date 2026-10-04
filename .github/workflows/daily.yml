@@ -16,6 +16,9 @@ name: Daily Brief
 #                            examples: "8" / "8,18" / "0,6,12,18"
 #            REPORT_DAYS     day-of-week filter (cron-style 0-6 SUN=0)  (default: * — every day)
 #                            examples: "*" / "1-5" (weekdays) / "1,3,5" (MWF)
+#            REPORT_URL      optional public report URL (for custom domains)
+#        - Optional Telegram push after a successful Pages publish:
+#            Secret: TELEGRAM_BOT_TOKEN; Variable: TELEGRAM_CHAT_ID
 #            DISABLE_SOURCE_IDS  comma-separated source ids to skip in CI  (default: linuxdo)
 #                            linux.do blocks datacenter IPs, so it can't be
 #                            fetched from Actions runners — skipped here, still
@@ -255,3 +258,39 @@ jobs:
           publish_branch: gh-pages
           keep_files: false  # we restored everything above, so a clean publish is fine
           commit_message: 'daily: report for ${{ github.run_id }}'
+
+      - name: Notify Telegram after publish
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID }}
+          REPORT_TZ: ${{ vars.REPORT_TZ }}
+          REPORT_URL: ${{ vars.REPORT_URL }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+            echo "Telegram notification not configured — skipping"
+            exit 0
+          fi
+          REPORT_DATE="$(TZ="${REPORT_TZ:-UTC}" date +%F)" node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+
+          const date = process.env.REPORT_DATE;
+          const reportPath = `daily_reports/${date}/${date}.json`;
+          const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+          const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
+          const pagePath = repo.toLowerCase() === `${owner}.github.io`.toLowerCase() ? '' : `/${repo}`;
+          const url = process.env.REPORT_URL || `https://${owner}.github.io${pagePath}/`;
+          const headline = report.hero_headline || '今日简报已发布';
+          const text = `📰 Daily Brief · ${date}\n${headline}\n${url}`;
+
+          const response = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ chat_id: process.env.TELEGRAM_CHAT_ID, text }),
+          });
+          const result = await response.json();
+          if (!response.ok || !result.ok) {
+            throw new Error(`Telegram sendMessage failed (HTTP ${response.status})`);
+          }
+          console.log(`Telegram notification sent for ${date}`);
+          NODE
