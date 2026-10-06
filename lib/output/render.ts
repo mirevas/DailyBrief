@@ -25,6 +25,7 @@ import {
  */
 const TEXTS_ZH = {
   siteTitle: "每日简报",
+  backToMenu: "返回顶部菜单",
   tabHighlights: "今日重点",
   todayHighlights: "今日重点速览",
   topStories: "今日要闻",
@@ -81,6 +82,7 @@ const TEXTS_ZH = {
 
 const TEXTS_EN: typeof TEXTS_ZH = {
   siteTitle: "Daily Brief",
+  backToMenu: "Back to top menu",
   tabHighlights: "Highlights",
   todayHighlights: "Today's Highlights",
   topStories: "Top Stories",
@@ -772,6 +774,36 @@ export function renderHtml(
   .panel { display: none; }
   .panel.active { display: block; }
 
+  .back-to-menu {
+    position: fixed;
+    z-index: 10;
+    right: max(1.25rem, env(safe-area-inset-right));
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    background: var(--card);
+    color: var(--fg);
+    box-shadow: 0 3px 14px rgb(0 0 0 / 18%);
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(0.5rem);
+    transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+  }
+  .back-to-menu.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .back-to-menu:hover { border-color: var(--accent); color: var(--accent); }
+  .back-to-menu:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .back-to-menu svg { width: 1.35rem; height: 1.35rem; }
+
   /* ===== digest (AI 简报) — compact ===== */
   .digest-category { margin-bottom: 1.1rem; }
   .category-header {
@@ -1417,7 +1449,25 @@ export function renderHtml(
     ${STR.footer}
   </footer>
 </main>
+<button class="back-to-menu" type="button" aria-label="${STR.backToMenu}" title="${STR.backToMenu}">
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+    <path d="M5 14l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+</button>
 <script>
+  var backToMenu = document.querySelector('.back-to-menu');
+  var mainTabs = document.querySelector('.tabs');
+  function updateBackToMenu() {
+    backToMenu.classList.toggle('visible', window.scrollY > 400);
+  }
+  window.addEventListener('scroll', updateBackToMenu, { passive: true });
+  updateBackToMenu();
+  backToMenu.addEventListener('click', function () {
+    if (mainTabs) {
+      mainTabs.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    }
+  });
+
   document.querySelectorAll('.tabs > .tab').forEach(function (btn) {
     btn.addEventListener('click', function () {
       var target = btn.dataset.tab;
