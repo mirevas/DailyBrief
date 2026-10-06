@@ -239,11 +239,21 @@ async function runTrading(): Promise<TradingSection | null> {
 }
 
 async function main() {
+  const date = todayKey();
+  const reportJsonPath = path.join(OUTPUT_DIR, date, `${date}.json`);
+  const skipExisting = process.env.DAILY_SKIP_IF_EXISTS === "true";
+  const force = process.env.DAILY_FORCE === "true";
+  if (skipExisting && !force && fs.existsSync(reportJsonPath)) {
+    console.log(
+      `[daily] ${reportJsonPath} already exists — skipping duplicate generation (set DAILY_FORCE=true to override)`,
+    );
+    return;
+  }
+
   // Fail fast on misconfigured backend before we spend 30s fetching
   // 500+ articles only to discover the LLM has no credentials.
   validateBackendCredentials();
 
-  const date = todayKey();
   console.log(`[daily] ${date} — fetching sources…\n`);
   const articles = await fetchAll();
   console.log(`\n[daily] total articles: ${articles.length}`);

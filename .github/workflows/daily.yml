@@ -11,11 +11,7 @@ name: Daily Brief
 #            LLM_BACKEND     deepseek | anthropic | openai | minimax | zhipu    (default: deepseek)
 #            LLM_MODEL       e.g. deepseek-v4-flash / claude-sonnet-4-6  (backend default if unset)
 #            REPORT_LOCALE   zh | en                                    (default: zh)
-#            REPORT_TZ       IANA tz, e.g. Asia/Shanghai / UTC          (default: UTC in CI)
-#            REPORT_HOUR     trigger hour(s) in REPORT_TZ, comma-list   (default: 8 — 08:00)
-#                            examples: "8" / "8,18" / "0,6,12,18"
-#            REPORT_DAYS     day-of-week filter (cron-style 0-6 SUN=0)  (default: * — every day)
-#                            examples: "*" / "1-5" (weekdays) / "1,3,5" (MWF)
+#            Schedule is fixed to 08:00 Europe/London, every day.
 #            REPORT_URL      optional public report URL (for custom domains)
 #        - Optional Telegram push after a successful Pages publish:
 #            Secret: TELEGRAM_BOT_TOKEN; Variable: TELEGRAM_CHAT_ID
@@ -29,23 +25,20 @@ name: Daily Brief
 #   https://<your-username>.github.io/<repo-name>/
 #
 # Schedule mechanics: cron probes twice per hour because GitHub Actions cron is
-# UTC-only and we want the user's local-timezone hour. A short "gate" job checks
-# the current hour in REPORT_TZ against REPORT_HOUR and only allows the build
-# job to run when they match. workflow_dispatch always bypasses the gate.
+# UTC-only. The gate checks the London date and only runs once that day's report
+# is absent. Manual runs require force=true to regenerate an existing report.
 
 on:
   schedule:
-    # Two hourly triggers (at :07 and :37) — GitHub Actions silently drops
-    # a non-trivial fraction of scheduled runs, sometimes whole stretches
-    # of 2-3 hours back-to-back. A single off-peak cron was not enough; we
-    # saw the BJ 08-10 stretch get fully swallowed multiple times. Two
-    # triggers per hour gives ~95% per-window coverage, and the gate's
-    # catchup branch handles the residual misses by allowing a build any
-    # time after `earliest REPORT_HOUR - 1` if today's report is still
-    # absent from gh-pages.
-    - cron: '7 * * * *'
-    - cron: '37 * * * *'
+    # Probe at the hour and half-hour; the gate de-duplicates by report date.
+    - cron: '0,30 * * * *'
   workflow_dispatch:
+    inputs:
+      force:
+        description: Regenerate today's report even if it already exists
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write  # needed to push to gh-pages branch
@@ -64,22 +57,16 @@ jobs:
       - name: Check schedule
         id: check
         env:
-          REPORT_TZ: ${{ vars.REPORT_TZ }}
-          REPORT_HOUR: ${{ vars.REPORT_HOUR }}
-          REPORT_DAYS: ${{ vars.REPORT_DAYS }}
+          REPORT_TZ: Europe/London
+          REPORT_HOUR: '8'
+          REPORT_DAYS: '*'
           EVENT_NAME: ${{ github.event_name }}
+          FORCE_RUN: ${{ inputs.force }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
 
-          # Manual triggers always run — user clicked Run workflow.
-          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
-            echo "Manual trigger — bypassing time gate"
-            echo "should-run=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          TZ_VAL="${REPORT_TZ:-UTC}"
+          TZ_VAL="${REPORT_TZ:-Europe/London}"
           HOURS_VAL="${REPORT_HOUR:-8}"
           DAYS_VAL="${REPORT_DAYS:-*}"
 
@@ -125,15 +112,38 @@ jobs:
             done
           fi
 
-          # Catchup branch — covers GitHub Actions silently dropping scheduled
-          # triggers (which happens to ~30% of cron runs, especially at the
-          # exact target hour). Fires when:
-          #   1. day matches AND
-          #   2. exact hour didn't match AND
-          #   3. we're past today's earliest REPORT_HOUR AND
-          #   4. today's report doesn't yet exist on gh-pages
-          # Once today's report is published, this branch self-suppresses on
-          # subsequent gate runs — no double-builds per day.
+          # Check publication state before allowing either the scheduled run
+          # or catchup path. The workflow concurrency group serializes runs,
+          # so a second queued gate sees the report published by the first.
+          TODAY=$(TZ="$TZ_VAL" date +%Y-%m-%d)
+          CHECK_URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/${TODAY}/${TODAY}.html?ref=gh-pages"
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "$CHECK_URL" || true)
+          if [ "$HTTP_CODE" = "200" ]; then
+            if [ "$FORCE_RUN" != "true" ]; then
+              echo "Today's report ($TODAY) already exists on gh-pages — skipping duplicate run"
+              echo "should-run=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "Force requested — today's existing report may be regenerated"
+          elif [ "$HTTP_CODE" != "404" ]; then
+            echo "Could not verify today's report (HTTP $HTTP_CODE); failing closed to avoid duplicate LLM calls"
+            exit 1
+          fi
+
+          # Manual runs bypass the time/day gate. Existing reports are only
+          # regenerated when the user explicitly sets force=true.
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "Manual trigger — bypassing time gate"
+            echo "should-run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Catch up after the configured hour if GitHub drops its scheduled
+          # trigger. No early run: the report should be for the requested day.
           catchup_match=false
           if [ "$day_match" = "true" ] && [ "$hour_match" = "false" ]; then
             earliest_hour=99
@@ -143,27 +153,10 @@ jobs:
                 earliest_hour=$h_trim
               fi
             done
-            # Tolerate 1h early: if BJ 07:XX is the only trigger before BJ
-            # 08:00 gets swallowed, we'd rather fire slightly early than
-            # not at all. earliest_hour=0 edge case: don't go negative.
             catchup_threshold=$earliest_hour
-            if [ "$earliest_hour" -gt 0 ]; then
-              catchup_threshold=$((earliest_hour - 1))
-            fi
             if [ "$NOW_HOUR" -ge "$catchup_threshold" ]; then
-              TODAY=$(TZ="$TZ_VAL" date +%Y-%m-%d)
-              CHECK_URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/${TODAY}/${TODAY}.html?ref=gh-pages"
-              HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
-                -H "Authorization: Bearer ${GH_TOKEN}" \
-                -H "Accept: application/vnd.github+json" \
-                -H "X-GitHub-Api-Version: 2022-11-28" \
-                "$CHECK_URL" || echo "000")
-              if [ "$HTTP_CODE" = "404" ]; then
-                echo "↻ Catchup: today's report ($TODAY) missing from gh-pages — recovering"
-                catchup_match=true
-              else
-                echo "Catchup check: today's report exists (HTTP $HTTP_CODE) — no action"
-              fi
+              echo "↻ Catchup: today's report ($TODAY) missing from gh-pages — recovering"
+              catchup_match=true
             fi
           fi
 
@@ -236,7 +229,9 @@ jobs:
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
           REPORT_LOCALE: ${{ vars.REPORT_LOCALE || 'zh' }}
-          REPORT_TZ: ${{ vars.REPORT_TZ }}
+          REPORT_TZ: Europe/London
+          DAILY_SKIP_IF_EXISTS: 'true'
+          DAILY_FORCE: ${{ inputs.force }}
           # Sources to skip in CI (comma-separated ids). linux.do's WAF blocks
           # datacenter egress from Actions runners (and Cloudflare Workers too —
           # no free proxy gets through), so fetching it here always fails. It
@@ -263,21 +258,55 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID }}
-          REPORT_TZ: ${{ vars.REPORT_TZ }}
+          REPORT_TZ: Europe/London
           REPORT_URL: ${{ vars.REPORT_URL }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
             echo "Telegram notification not configured — skipping"
             exit 0
           fi
-          REPORT_DATE="$(TZ="${REPORT_TZ:-UTC}" date +%F)" node --input-type=module <<'NODE'
+          REPORT_DATE="$(TZ="${REPORT_TZ:-Europe/London}" date +%F)" node --input-type=module <<'NODE'
           import fs from 'node:fs';
 
           const date = process.env.REPORT_DATE;
           const reportPath = `daily_reports/${date}/${date}.json`;
           const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
           const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
+          const apiBase = `https://api.github.com/repos/${owner}/${repo}/contents`;
+          const markerPath = `.telegram-attempts/${date}.json`;
+          const headers = {
+            'authorization': `Bearer ${process.env.GH_TOKEN}`,
+            'accept': 'application/vnd.github+json',
+            'x-github-api-version': '2022-11-28',
+            'content-type': 'application/json',
+          };
+
+          // Claim the date before sending. Telegram sendMessage has no
+          // idempotency key, so a persistent claim is the at-most-once guard.
+          const markerUrl = `${apiBase}/${markerPath}?ref=gh-pages`;
+          const markerCheck = await fetch(markerUrl, { headers });
+          if (markerCheck.ok) {
+            console.log(`Telegram notification already attempted for ${date} — skipping`);
+            process.exit(0);
+          }
+          if (markerCheck.status !== 404) {
+            throw new Error(`Could not check Telegram marker (HTTP ${markerCheck.status})`);
+          }
+          const claim = await fetch(`${apiBase}/${markerPath}`, {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify({
+              message: `telegram: claim notification for ${date}`,
+              branch: 'gh-pages',
+              content: Buffer.from(JSON.stringify({ date, run_id: process.env.GITHUB_RUN_ID }) + '\n').toString('base64'),
+            }),
+          });
+          if (!claim.ok) {
+            throw new Error(`Could not claim Telegram notification date (HTTP ${claim.status})`);
+          }
+
           const pagePath = repo.toLowerCase() === `${owner}.github.io`.toLowerCase() ? '' : `/${repo}`;
           const url = process.env.REPORT_URL || `https://${owner}.github.io${pagePath}/`;
           const headline = report.hero_headline || '今日简报已发布';

@@ -112,13 +112,11 @@
    - `LLM_MODEL` —— 覆盖该 backend 的默认模型（不填用 [`.env.example`](.env.example) 里列的默认）
    - `LLM_BASE_URL` —— 自定义 endpoint。**选了上面"中转站"那行的话必填**；本地 Ollama 填 `http://localhost:11434/v1`、LM Studio 填 `http://localhost:1234/v1`
    - `REPORT_LOCALE` —— `zh`（默认）或 `en`，控制数据源 + UI + prompt 全套切英文
-   - `REPORT_TZ` —— IANA 时区名（默认 UTC），例 `Asia/Shanghai` / `America/Los_Angeles`。**同时影响触发时间和日期标签**
-   - `REPORT_HOUR` —— 触发的小时（基于 `REPORT_TZ`），默认 `8`（早 8 点）。逗号分隔可多次触发，如 `8,18` = 早 8 + 晚 6
-   - `REPORT_DAYS` —— 触发的星期（cron 风格，`0`=周日 ... `6`=周六），默认 `*`（每天）。例 `1-5` = 工作日；`1,3,5` = 周一三五
+   - GitHub Actions 调度固定为每天伦敦时间 08:00（夏令时自动切换），无需设置时区或时间变量。
    - （可选）手机推送：在 Secrets 添加 `TELEGRAM_BOT_TOKEN`，在 Variables 添加 `TELEGRAM_CHAT_ID`。使用自定义域名时，再添加 `REPORT_URL`（报告首页 URL）
 6. **Actions 标签 → 选 "Daily Brief" workflow → Run workflow** 手动触发一次
 
-跑完后报告在 `https://<你的用户名>.github.io/<repo-名字>/`。之后**默认每天 `REPORT_TZ` 时区的 08:00 自动更新**（不设 `REPORT_TZ` 就是 UTC 08:00）。
+跑完后报告在 `https://<你的用户名>.github.io/<repo-名字>/`。之后工作流按**伦敦时间每天 08:00**自动运行，夏令时自动切换。同一天报告已发布后，后续调度会跳过，避免重复生成和 API 调用。Telegram 每个伦敦日期最多尝试推送一次。GitHub Actions 的定时任务可能有启动延迟。
 
 #### 📲 部署完成后推送到手机（可选）
 
@@ -128,21 +126,13 @@ GitHub Actions 成功发布到 Pages 后会给 Telegram 发一条带当日头条
 2. 在手机上打开新 bot 并发送 `/start`，然后通过 Telegram Bot API 的 `getUpdates` 获取自己的 `chat.id`；把它保存为仓库 **Variable** `TELEGRAM_CHAT_ID`。群聊推送则先把 bot 加入群组，并使用群组 chat ID。
 3. 在 **Settings → Secrets and variables → Actions** 配置以上值。自定义域名用户还需设置 `REPORT_URL`，默认链接使用 `https://<owner>.github.io/<repo>/`。
 
-之后每次 Actions 成功部署都会推送。通知步骤在 Pages 发布之后执行；如果 Telegram 服务或配置出错，报告仍已发布，但该 workflow run 会显示失败，便于发现通知故障。实现使用 Telegram 官方 [`sendMessage`](https://core.telegram.org/bots/api#sendmessage) HTTP API。
+每个伦敦日期最多尝试推送一次。通知步骤在 Pages 发布之后执行；如果 Telegram 服务或配置出错，报告仍已发布，但该 workflow run 会显示失败。为避免重试造成重复消息，发送前会在 Pages 分支记录该日期的通知尝试；因此发送失败时不会在当天自动重试。实现使用 Telegram 官方 [`sendMessage`](https://core.telegram.org/bots/api#sendmessage) HTTP API。
 
-> ⏰ **触发机制**：GitHub Actions 的 cron 只接受 UTC，所以工作流 cron 设置为**每小时探测两次**，里面有一个 `gate` 任务用 `REPORT_TZ` 把当前小时和 `REPORT_HOUR/REPORT_DAYS` 对照——匹配才往下跑 build，否则秒退。这样不论你在哪个时区都能精准命中本地时间，**夏令时也自动跟着切换**（IANA 时区数据库内置）。
+手动运行 workflow 默认遵守每日去重；只有在 **Run workflow** 表单中将 `force` 设为 `true` 才会重生成当天报告。即使强制重生成，Telegram 当天也不会再次尝试推送。
 
-**常用 schedule 配方：**
+> ⏰ **触发机制**：GitHub Actions cron 只接受 UTC，因此工作流每半小时探测一次，再按 `Europe/London` 判断是否到 08:00。若漏掉触发，会在 08:00 之后补跑；当天报告已发布则跳过。GitHub 可能延迟启动定时工作流。
 
-| 想要 | `REPORT_HOUR` | `REPORT_DAYS` |
-|---|---|---|
-| 每天 08:00（默认） | 不填或 `8` | 不填或 `*` |
-| 每天早晚两次（8 + 18 点） | `8,18` | `*` |
-| 工作日 09:00 | `9` | `1-5` |
-| 周一/三/五 早 7 晚 9 两次 | `7,21` | `1,3,5` |
-| 每 6 小时一次 | `0,6,12,18` | `*` |
-
-只想要默认每天 08:00 本地时间，**只填 `REPORT_TZ` 一个变量就够了**（如 `Asia/Shanghai`），其他全部留空。
+GitHub Actions 工作流的时间固定为伦敦时间每天 08:00。若要调整，请编辑 `.github/workflows/daily.yml` 中的门禁配置。
 
 **💸 成本估算**：GitHub Actions 公开 repo 完全免费。Pages 公开 repo 也免费。唯一花钱的就是 LLM API 调用——DeepSeek 月成本不到 $1，Anthropic Sonnet < $2。
 
@@ -154,7 +144,7 @@ GitHub Actions 成功发布到 Pages 后会给 Telegram 发一条带当日头条
 - **Variable name 报 "alphanumeric only"** —— 输入 `LLM_BACKEND` 时下划线被中文输入法替换成了全角 `＿`（U+FF3F）。切到英文输入法 Shift+`-` 重打
 - **第一次跑完才能选 Pages source** —— Pages 设置页要求选已存在的分支，但 `gh-pages` 是首次 workflow 跑成功后才创建出来。顺序：配 secret → 触发 workflow → 跑完 → 回 Settings → Pages 选 `gh-pages`
 - **Action 红 X 怎么看具体原因** —— 点失败的 build → 左边列出每个 step → 找有红 X 的那步点开看 log。最常见两类：`401/402` = API key 拼错或没余额；`403` = workflow permissions 没设成 Read and write
-- **自动触发只跑了 `gate`，后面的 build 被 skipped** —— 这是调度门禁在工作，不一定是失败。点开那次 run → `gate` → `Check schedule`，看 `Now in ...`、`Configured REPORT_HOUR=...` 和 `No match — skipping (...)`。最常见原因是没在 **Repository Variables** 里设置 `REPORT_TZ=Asia/Shanghai`，此时默认按 UTC 08:00 触发（北京时间 16:00）。如果变量放在 **Settings → Environments** 里，默认 workflow 也读不到；请移到 **Settings → Secrets and variables → Actions → Variables**，或给 `gate` / `build` 两个 job 都加同一个 `environment: <name>`
+- **自动触发只跑了 `gate`，后面的 build 被 skipped** —— 点开那次 run → `gate` → `Check schedule` 查看 `Now in ...` 和跳过原因。工作流按伦敦时间每天 08:00 运行；当天报告已发布时跳过后续触发。
 - **报错 `DEEPSEEK_API_KEY (or generic LLM_API_KEY) is required`，但我填的是别家的 key** —— 经典 secret/variable 不配对。Workflow 默认 `LLM_BACKEND=deepseek`，光填 `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` 不够，**必须同时去 Variables 标签加 `LLM_BACKEND=anthropic` / `openai`**。从 v1.x 起启动期会直接告诉你哪个 key 已设、应该把 `LLM_BACKEND` 改成什么
 - **配齐了 secret + variable 还是报同样的错** —— 99% 是配置放错了作用域。GitHub 上有两个长得几乎一样的页面：
   - ✅ **Settings → Secrets and variables → Actions**（页眉是 "Repository secrets" / "Repository variables"）—— 本项目默认走这里
@@ -655,31 +645,21 @@ The registry currently contains 53 sources, with 26 enabled by default. After lo
    - `LLM_MODEL` — override the backend's default model (otherwise uses the default listed in [`.env.example`](.env.example))
    - `LLM_BASE_URL` — custom endpoint. **Required if you picked the "proxy" row above.** For local Ollama use `http://localhost:11434/v1`, LM Studio `http://localhost:1234/v1`
    - `REPORT_LOCALE` — `zh` (default) or `en` — switches sources + UI + LLM prompts as a set
-   - `REPORT_TZ` — IANA timezone name (default UTC); e.g. `Asia/Shanghai` / `America/Los_Angeles`. **Drives both the trigger time and the date label.**
-   - `REPORT_HOUR` — hour(s) to fire in `REPORT_TZ`, default `8` (08:00). Comma-separated for multiple, e.g. `8,18` = 8 AM and 6 PM
-   - `REPORT_DAYS` — day-of-week filter (cron-style, `0`=Sunday ... `6`=Saturday), default `*` (every day). E.g. `1-5` = weekdays; `1,3,5` = Mon/Wed/Fri
+   - GitHub Actions runs every day at **08:00 Europe/London**, with automatic GMT/BST changes. The schedule is fixed in the workflow.
    - (Optional) phone notifications: add `TELEGRAM_BOT_TOKEN` as a Secret and `TELEGRAM_CHAT_ID` as a Variable. For a custom domain, also set `REPORT_URL` to the report homepage.
 6. **Actions tab → "Daily Brief" workflow → Run workflow** to trigger manually for the first time
 
-Once the workflow turns green, your report lives at `https://<your-username>.github.io/<repo-name>/`. After that, **it refreshes daily at 08:00 in `REPORT_TZ`** (or 08:00 UTC if `REPORT_TZ` is unset).
+Once the workflow turns green, your report lives at `https://<your-username>.github.io/<repo-name>/`. After that, it runs daily at **08:00 Europe/London**, with automatic GMT/BST changes. A report already published for that date suppresses duplicate scheduled runs.
 
 #### 📲 Optional Telegram push after deployment
 
-After Pages publishes successfully, the workflow sends a Telegram message with the day's headline and report link. If the Telegram settings are absent, this step is skipped. Create a bot through [@BotFather](https://t.me/BotFather), save its token as the `TELEGRAM_BOT_TOKEN` repository Secret, start a chat with the bot, and save your `chat.id` as the `TELEGRAM_CHAT_ID` repository Variable. For a custom domain, set `REPORT_URL`. The workflow uses Telegram's official [`sendMessage`](https://core.telegram.org/bots/api#sendmessage) API. A Telegram delivery error marks the workflow run as failed even though Pages has already been published.
+After Pages publishes successfully, the workflow sends a Telegram message with the day's headline and report link. If the Telegram settings are absent, this step is skipped. Create a bot through [@BotFather](https://t.me/BotFather), save its token as the `TELEGRAM_BOT_TOKEN` repository Secret, start a chat with the bot, and save your `chat.id` as the `TELEGRAM_CHAT_ID` repository Variable. For a custom domain, set `REPORT_URL`. Each London report date gets at most one send attempt: a marker is recorded before sending, so a Telegram failure will not be retried automatically that day. A Telegram delivery error marks the workflow run as failed even though Pages has already been published.
 
-> ⏰ **How the schedule works**: GitHub Actions cron is UTC-only, so the workflow probes **twice per hour** and uses a `gate` job to check if the current hour in `REPORT_TZ` matches `REPORT_HOUR` / `REPORT_DAYS`. If so, the build job proceeds; otherwise it exits in seconds. This lets the schedule track any local timezone precisely, and **handles DST transitions automatically** (via the IANA tz database).
+Manual workflow runs respect the daily guard by default. Set `force` to `true` in the **Run workflow** form to regenerate that day's report; Telegram still will not be attempted again for the same London date.
 
-**Common schedule recipes:**
+> ⏰ **How the schedule works**: GitHub Actions cron is UTC-only, so the workflow probes twice per hour and checks for 08:00 in `Europe/London`. It catches up after a missed trigger and skips if today's report is already published. GitHub may start scheduled workflows late.
 
-| You want | `REPORT_HOUR` | `REPORT_DAYS` |
-|---|---|---|
-| Every day at 08:00 (default) | unset or `8` | unset or `*` |
-| Twice daily (8 AM + 6 PM) | `8,18` | `*` |
-| Weekdays at 09:00 | `9` | `1-5` |
-| Mon/Wed/Fri at 7 AM + 9 PM | `7,21` | `1,3,5` |
-| Every 6 hours | `0,6,12,18` | `*` |
-
-If you just want the default (08:00 local daily), **set only `REPORT_TZ`** (e.g. `Asia/Shanghai`) and leave the rest at defaults.
+The GitHub Actions schedule is fixed at 08:00 Europe/London. To change it, edit the gate configuration in `.github/workflows/daily.yml`.
 
 **💸 Cost summary**: GitHub Actions on public repos is free. Pages on public repos is free. The only thing you pay for is LLM API calls — DeepSeek runs under $1/month, Anthropic Sonnet under $2.
 
@@ -691,7 +671,7 @@ If you just want the default (08:00 local daily), **set only `REPORT_TZ`** (e.g.
 - **"Variable name can only contain alphanumeric characters"** — most likely the underscore in `LLM_BACKEND` got autocorrected by a CJK input method to a full-width `＿` (U+FF3F). Switch to English input, retype Shift+`-`, or copy-paste.
 - **Pages source dropdown doesn't show `gh-pages`** — that branch only exists after the first successful workflow run. Order: configure secret → trigger workflow → wait for green → go back to Settings → Pages.
 - **Where to read a failed run** — Actions tab → click the red X → left sidebar lists each step → click the failing one to expand its log. Most common causes: `401`/`402` (API key wrong or out of credit), `403` (workflow permissions still set to "Read only").
-- **Scheduled runs only execute `gate`, then build is skipped** — this is the schedule gate doing its job, not necessarily a failure. Open that run → `gate` → `Check schedule`, then inspect `Now in ...`, `Configured REPORT_HOUR=...`, and `No match — skipping (...)`. The most common cause is missing `REPORT_TZ=Asia/Shanghai` in **Repository Variables**, so the default is UTC 08:00 (16:00 in Beijing). Variables stored under **Settings → Environments** are invisible to the default workflow; move them to **Settings → Secrets and variables → Actions → Variables**, or add the same `environment: <name>` to both the `gate` and `build` jobs.
+- **Scheduled runs only execute `gate`, then build is skipped** — this is expected outside the 08:00 Europe/London window or when today's report already exists. Open that run → `gate` → `Check schedule` to inspect `Now in ...` and the skip reason. GitHub may start scheduled workflows late.
 - **Error: `DEEPSEEK_API_KEY (or generic LLM_API_KEY) is required` — but I set a different provider's key** — classic secret-without-variable mismatch. The workflow defaults `LLM_BACKEND=deepseek`; setting `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` alone is not enough — you **also need to add the matching `LLM_BACKEND=anthropic` / `openai` under Variables**. As of v1.x the startup check prints exactly which key it found and which `LLM_BACKEND` value to set.
 - **I added both the secret and variable, still the same error** — 99% sure your values went into the wrong scope. GitHub has two near-identical-looking pages:
   - ✅ **Settings → Secrets and variables → Actions** (header reads "Repository secrets" / "Repository variables") — this is the default this project uses
