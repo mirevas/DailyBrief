@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "normalized": "amiga",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "amigo",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "el amigo",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "el esposo",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "el hombre",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "el nino",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "el nombre",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "esposa",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "esposo",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "familia",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "hombre",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "la amiga",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "la esposa",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "la familia",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "la mujer",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "la persona",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "mujer",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "nino",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "nombre",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "persona",
+      "topicIds": [
+        "people"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "es-2026-10-31-people",
+  "language": "es",
+  "level": "A1",
+  "topicId": "people",
+  "title": "People",
+  "newWordCount": 10,
+  "createdAt": "2026-10-31",
+  "source": "llm",
+  "model": "openai-gpt-4o-mini",
+  "promptVersion": 1,
+  "items": [
+    {
+      "entryId": "es-persona-noun",
+      "lemma": "persona",
+      "term": "la persona",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "person",
+        "zh": "人"
+      },
+      "example": {
+        "es": "Ella es una buena persona.",
+        "en": "She is a good person.",
+        "zh": "她是一个好人。"
+      }
+    },
+    {
+      "entryId": "es-nombre-noun",
+      "lemma": "nombre",
+      "term": "el nombre",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "name",
+        "zh": "名字"
+      },
+      "example": {
+        "es": "¿Cuál es tu nombre?",
+        "en": "What is your name?",
+        "zh": "你叫什么名字？"
+      }
+    },
+    {
+      "entryId": "es-amigo-noun",
+      "lemma": "amigo",
+      "term": "el amigo",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "friend",
+        "zh": "朋友"
+      },
+      "example": {
+        "es": "Mi amigo se llama Juan.",
+        "en": "My friend's name is Juan.",
+        "zh": "我的朋友叫胡安。"
+      }
+    },
+    {
+      "entryId": "es-amiga-noun",
+      "lemma": "amiga",
+      "term": "la amiga",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "friend",
+        "zh": "朋友"
+      },
+      "example": {
+        "es": "Ella es mi amiga.",
+        "en": "She is my friend.",
+        "zh": "她是我的朋友。"
+      }
+    },
+    {
+      "entryId": "es-familia-noun",
+      "lemma": "familia",
+      "term": "la familia",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "family",
+        "zh": "家人"
+      },
+      "example": {
+        "es": "La familia es importante.",
+        "en": "Family is important.",
+        "zh": "家庭是重要的。"
+      }
+    },
+    {
+      "entryId": "es-hombre-noun",
+      "lemma": "hombre",
+      "term": "el hombre",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "man",
+        "zh": "男"
+      },
+      "example": {
+        "es": "Él es un hombre alto.",
+        "en": "He is a tall man.",
+        "zh": "他是一个高个子男。"
+      }
+    },
+    {
+      "entryId": "es-mujer-noun",
+      "lemma": "mujer",
+      "term": "la mujer",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "woman",
+        "zh": "女"
+      },
+      "example": {
+        "es": "Ella es una mujer inteligente.",
+        "en": "She is an intelligent woman.",
+        "zh": "她是一个聪明的女人。"
+      }
+    },
+    {
+      "entryId": "es-esposa-noun",
+      "lemma": "esposa",
+      "term": "la esposa",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "wife",
+        "zh": "妻子"
+      },
+      "example": {
+        "es": "Mi esposa es muy amable.",
+        "en": "My wife is very kind.",
+        "zh": "我的妻子很善良。"
+      }
+    },
+    {
+      "entryId": "es-esposo-noun",
+      "lemma": "esposo",
+      "term": "el esposo",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "husband",
+        "zh": "丈夫"
+      },
+      "example": {
+        "es": "Su esposo trabaja mucho.",
+        "en": "Her husband works a lot.",
+        "zh": "她的丈夫工作很忙。"
+      }
+    },
+    {
+      "entryId": "es-nino-noun",
+      "lemma": "niño",
+      "term": "el niño",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "boy",
+        "zh": "男孩"
+      },
+      "example": {
+        "es": "El niño juega en el parque.",
+        "en": "The boy is playing in the park.",
+        "zh": "那个男孩在公园里玩。"
+      }
+    }
+  ]
+}
