@@ -683,6 +683,7 @@ export function renderHtml(
     letter-spacing: -0.02em;
     line-height: 1.1;
   }
+  .header-links { display: flex; flex-direction: column; align-items: flex-start; gap: 0.1rem; }
   .archive-link {
     display: inline-block;
     margin-bottom: 1rem;
@@ -692,6 +693,7 @@ export function renderHtml(
     border-bottom: 1px dashed var(--rule);
     padding-bottom: 1px;
   }
+  .header-links .archive-link { margin-bottom: 0; }
   .archive-link:hover { color: var(--accent); border-bottom-style: solid; }
   .hero-card {
     background: linear-gradient(135deg, var(--hero-grad-from) 0%, var(--hero-grad-to) 100%);
@@ -1416,7 +1418,7 @@ export function renderHtml(
   <header class="report-header">
     <span class="eyebrow">${STR.siteTitle}</span>
     <h1 class="report-title">${date}</h1>
-    ${process.env.WEB_MODE === "true" ? `<a class="archive-link" href="../archive.html">${STR.archiveLink}</a>` : ""}
+    ${process.env.WEB_MODE === "true" ? `<div class="header-links"><a class="archive-link" href="../archive.html">${STR.archiveLink}</a><a class="archive-link" href="../hola.html">Hola!</a></div>` : ""}
   </header>
 
   <nav class="tabs" role="tablist">

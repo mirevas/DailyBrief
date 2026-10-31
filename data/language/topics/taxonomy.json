@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "language": "es",
+  "level": "A1",
+  "selectionPolicy": {
+    "wordsPerLesson": 10,
+    "oneTopicPerLesson": true,
+    "continueCurrentTopicWhileEligibleCandidatesRemain": true,
+    "frequencySelection": "LLM selects common, high-frequency A1 words",
+    "topicContinuation": "Continue the previous topic while 10 non-repeated high-frequency items can be generated"
+  },
+  "topics": [
+    { "id": "people", "title": "People", "order": 1, "description": "Basic words for people and simple descriptions." },
+    { "id": "family", "title": "Family", "order": 2, "description": "Immediate family and close relationships." },
+    { "id": "meeting-people", "title": "Meeting people", "order": 3, "description": "Simple introductions and getting acquainted." }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dailybrief.local/schema/daily-lesson.schema.json",
+  "title": "DailyBrief Learn lesson",
+  "type": "object",
+  "required": ["schemaVersion", "lessonId", "language", "level", "topicId", "title", "newWordCount", "createdAt", "items"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "lessonId": { "type": "string", "minLength": 1 },
+    "language": { "const": "es" },
+    "level": { "type": "string", "pattern": "^A[12]$" },
+    "topicId": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "newWordCount": { "type": "integer", "minimum": 1 },
+    "createdAt": { "type": "string", "format": "date" },
+    "contentSource": { "type": "string" },
+    "source": { "const": "llm" },
+    "model": { "type": "string", "minLength": 1 },
+    "promptVersion": { "const": 1 },
+    "items": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["entryId", "term", "lemma", "partOfSpeech", "translation", "example"],
+        "properties": {
+          "entryId": { "type": "string", "minLength": 1 },
+          "term": { "type": "string", "minLength": 1 },
+          "lemma": { "type": "string", "minLength": 1 },
+          "partOfSpeech": { "type": "string", "minLength": 1 },
+          "pronunciation": { "type": "string" },
+          "gender": { "type": "string" },
+          "frequencyBand": { "const": "high" },
+          "translation": { "$ref": "#/$defs/bilingual" },
+          "example": { "$ref": "#/$defs/trilingual" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "bilingual": {
+      "type": "object", "required": ["en", "zh"],
+      "properties": { "en": { "type": "string", "minLength": 1 }, "zh": { "type": "string", "minLength": 1 } },
+      "additionalProperties": false
+    },
+    "trilingual": {
+      "type": "object", "required": ["es", "en", "zh"],
+      "properties": { "es": { "type": "string", "minLength": 1 }, "en": { "type": "string", "minLength": 1 }, "zh": { "type": "string", "minLength": 1 } },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

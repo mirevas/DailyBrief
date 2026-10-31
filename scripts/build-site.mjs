@@ -15,6 +15,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { writeHolaPage } from "./language/render-page.mjs";
 
 const ROOT = "daily_reports";
 
@@ -40,7 +41,8 @@ const latest = dates[0];
 const latestPath = path.join(ROOT, latest, `${latest}.html`);
 const latestHtml = fs
   .readFileSync(latestPath, "utf8")
-  .replace(/href="\.\.\/archive\.html"/g, 'href="./archive.html"');
+  .replace(/href="\.\.\/archive\.html"/g, 'href="./archive.html"')
+  .replace(/href="\.\.\/hola\.html"/g, 'href="./hola.html"');
 fs.writeFileSync(path.join(ROOT, "index.html"), latestHtml, "utf8");
 console.log(`[build-site] index.html  ← ${latest}/${latest}.html`);
 
@@ -99,6 +101,7 @@ const archiveHtml = `<!doctype html>
   <p class="meta">${dates.length} report${dates.length === 1 ? "" : "s"} · newest first · generated ${new Date().toISOString().slice(0, 10)}</p>
   <div class="top">
     <a href="./index.html">→ Latest report (${latest})</a>
+    <span> · </span><a href="./hola.html">Hola! · Learn Spanish</a>
   </div>
   <ul>
 ${rows}
@@ -108,6 +111,10 @@ ${rows}
 `;
 fs.writeFileSync(path.join(ROOT, "archive.html"), archiveHtml, "utf8");
 console.log(`[build-site] archive.html (${dates.length} dates)`);
+
+// --- Hola! = standalone Spanish learning page ---
+writeHolaPage(ROOT);
+console.log(`[build-site] hola.html (latest available Spanish A1 lesson)`);
 
 // .nojekyll prevents GitHub Pages from running Jekyll, which would otherwise
 // strip directories whose names start with "_". We don't have any today but

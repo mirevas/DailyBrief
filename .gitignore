@@ -8,7 +8,8 @@
 .env*
 !.env.example
 
-# trending pipeline output (each fork generates its own)
+# Runtime reports, generated Spanish lessons, and derived used-word index.
+# Published separately from the repository via the gh-pages workflow.
 /daily_reports/
 /logs/
 

@@ -14,6 +14,8 @@
     "sources:check": "tsx scripts/sources.ts check",
     "deploy": "node scripts/deploy.mjs",
     "build-site": "node scripts/build-site.mjs",
+    "language:check": "node scripts/language/check.mjs",
+    "language:generate": "node scripts/run-tsx.mjs scripts/language/generate.ts",
     "open": "node scripts/open-report.mjs"
   },
   "dependencies": {

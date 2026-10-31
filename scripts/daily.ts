@@ -27,6 +27,7 @@ import { analyzeWatchlist } from "../lib/trading/runner";
 import { fetchCryptoFearGreed } from "../lib/trading/fear-greed";
 import { fetchCryptoGlobal } from "../lib/trading/coingecko";
 import { generateTradingCommentary } from "../lib/ai/trading-commentary";
+import { generateAndStoreLanguageLesson } from "../lib/ai/language-lesson";
 import type { TradingSection } from "../lib/ai/pipeline";
 import { todayKey } from "../lib/utils";
 
@@ -284,6 +285,16 @@ async function main() {
   const { report } = await generateDailyReport(articles);
   if (trading) report.trading = trading;
   console.log(`[daily] digest ready in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
+
+  // Language learning is an independent enrichment. A failure should not
+  // prevent publication of the news report; build-site will keep showing the
+  // latest successfully stored lesson (or an empty state before first success).
+  try {
+    await generateAndStoreLanguageLesson(date);
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.warn(`[daily] Spanish lesson generation failed; keeping latest available lesson: ${msg}`);
+  }
 
   const dateDir = path.join(OUTPUT_DIR, date);
   fs.mkdirSync(dateDir, { recursive: true });
