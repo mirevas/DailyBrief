@@ -2,6 +2,18 @@
   "version": 1,
   "entries": [
     {
+      "normalized": "abuela",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "abuelo",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
       "normalized": "amiga",
       "topicIds": [
         "people"
@@ -14,13 +26,43 @@
       ]
     },
     {
+      "normalized": "chica",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "chico",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "el abuelo",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
       "normalized": "el amigo",
       "topicIds": [
         "people"
       ]
     },
     {
+      "normalized": "el chico",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
       "normalized": "el esposo",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "el hermano",
       "topicIds": [
         "people"
       ]
@@ -44,6 +86,18 @@
       ]
     },
     {
+      "normalized": "el primo",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "el tio",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
       "normalized": "esposa",
       "topicIds": [
         "people"
@@ -62,13 +116,37 @@
       ]
     },
     {
+      "normalized": "hermana",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "hermano",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
       "normalized": "hombre",
       "topicIds": [
         "people"
       ]
     },
     {
+      "normalized": "la abuela",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
       "normalized": "la amiga",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "la chica",
       "topicIds": [
         "people"
       ]
@@ -86,6 +164,12 @@
       ]
     },
     {
+      "normalized": "la hermana",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
       "normalized": "la mujer",
       "topicIds": [
         "people"
@@ -93,6 +177,18 @@
     },
     {
       "normalized": "la persona",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "la prima",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "la tia",
       "topicIds": [
         "people"
       ]
@@ -117,6 +213,30 @@
     },
     {
       "normalized": "persona",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "prima",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "primo",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "tia",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "tio",
       "topicIds": [
         "people"
       ]

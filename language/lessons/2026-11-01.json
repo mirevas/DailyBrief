@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "es-2026-11-01-people",
+  "language": "es",
+  "level": "A1",
+  "topicId": "people",
+  "title": "People",
+  "newWordCount": 10,
+  "createdAt": "2026-11-01",
+  "source": "llm",
+  "model": "openai-gpt-4o-mini",
+  "promptVersion": 1,
+  "items": [
+    {
+      "entryId": "es-chica-noun",
+      "lemma": "chica",
+      "term": "la chica",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "girl",
+        "zh": "女孩"
+      },
+      "example": {
+        "es": "La chica es alta.",
+        "en": "The girl is tall.",
+        "zh": "这个女孩很高。"
+      }
+    },
+    {
+      "entryId": "es-chico-noun",
+      "lemma": "chico",
+      "term": "el chico",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "boy",
+        "zh": "男孩"
+      },
+      "example": {
+        "es": "El chico es simpático.",
+        "en": "The boy is friendly.",
+        "zh": "这个男孩很友好。"
+      }
+    },
+    {
+      "entryId": "es-abuelo-noun",
+      "lemma": "abuelo",
+      "term": "el abuelo",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "grandfather",
+        "zh": "爷爷"
+      },
+      "example": {
+        "es": "Mi abuelo es viejo.",
+        "en": "My grandfather is old.",
+        "zh": "我的爷爷很老。"
+      }
+    },
+    {
+      "entryId": "es-abuela-noun",
+      "lemma": "abuela",
+      "term": "la abuela",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "grandmother",
+        "zh": "奶奶"
+      },
+      "example": {
+        "es": "La abuela cocina bien.",
+        "en": "Grandmother cooks well.",
+        "zh": "奶奶做饭很好。"
+      }
+    },
+    {
+      "entryId": "es-hermano-noun",
+      "lemma": "hermano",
+      "term": "el hermano",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "brother",
+        "zh": "兄弟"
+      },
+      "example": {
+        "es": "Mi hermano tiene diez años.",
+        "en": "My brother is ten years old.",
+        "zh": "我的兄弟十岁。"
+      }
+    },
+    {
+      "entryId": "es-hermana-noun",
+      "lemma": "hermana",
+      "term": "la hermana",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "sister",
+        "zh": "姐妹"
+      },
+      "example": {
+        "es": "Mi hermana es estudiante.",
+        "en": "My sister is a student.",
+        "zh": "我的姐妹是学生。"
+      }
+    },
+    {
+      "entryId": "es-tio-noun",
+      "lemma": "tío",
+      "term": "el tío",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "uncle",
+        "zh": "叔叔"
+      },
+      "example": {
+        "es": "El tío vive en España.",
+        "en": "The uncle lives in Spain.",
+        "zh": "这位叔叔住在西班牙。"
+      }
+    },
+    {
+      "entryId": "es-tia-noun",
+      "lemma": "tía",
+      "term": "la tía",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "aunt",
+        "zh": "阿姨"
+      },
+      "example": {
+        "es": "La tía trabaja en el hospital.",
+        "en": "The aunt works in the hospital.",
+        "zh": "这位阿姨在医院工作。"
+      }
+    },
+    {
+      "entryId": "es-primo-noun",
+      "lemma": "primo",
+      "term": "el primo",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "cousin (male)",
+        "zh": "表兄弟"
+      },
+      "example": {
+        "es": "Mi primo juega al fútbol.",
+        "en": "My cousin plays football.",
+        "zh": "我的表兄弟踢足球。"
+      }
+    },
+    {
+      "entryId": "es-prima-noun",
+      "lemma": "prima",
+      "term": "la prima",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "cousin (female)",
+        "zh": "表姐妹"
+      },
+      "example": {
+        "es": "Mi prima es artística.",
+        "en": "My cousin is artistic.",
+        "zh": "我的表姐妹很有艺术天赋。"
+      }
+    }
+  ]
+}
