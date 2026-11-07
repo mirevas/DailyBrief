@@ -77,7 +77,8 @@ const TEXTS_ZH = {
   mdEditorNote: "编辑短评",
   mdTodayKeywords: "今日关键词",
   mdImportance: "重要度",
-  archiveLink: "← 历史归档",
+  archiveLink: "→ 历史归档",
+  learnSpanishLink: "→ Hola!",
 };
 
 const TEXTS_EN: typeof TEXTS_ZH = {
@@ -135,7 +136,8 @@ const TEXTS_EN: typeof TEXTS_ZH = {
   mdEditorNote: "Editor's Note",
   mdTodayKeywords: "Keywords",
   mdImportance: "Importance",
-  archiveLink: "← Archive",
+  archiveLink: "→ Archive",
+  learnSpanishLink: "→ Hola!",
 };
 
 const STR = REPORT_LOCALE === "en" ? TEXTS_EN : TEXTS_ZH;
@@ -1418,7 +1420,7 @@ export function renderHtml(
   <header class="report-header">
     <span class="eyebrow">${STR.siteTitle}</span>
     <h1 class="report-title">${date}</h1>
-    ${process.env.WEB_MODE === "true" ? `<div class="header-links"><a class="archive-link" href="../archive.html">${STR.archiveLink}</a><a class="archive-link" href="../hola.html">Hola!</a></div>` : ""}
+    ${process.env.WEB_MODE === "true" ? `<div class="header-links"><a class="archive-link" href="../archive.html">${STR.archiveLink}</a><a class="archive-link" href="../hola.html">${STR.learnSpanishLink}</a></div>` : ""}
   </header>
 
   <nav class="tabs" role="tablist">

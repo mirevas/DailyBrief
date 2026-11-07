@@ -5,6 +5,11 @@ import { extractJson } from "./json-util";
 import { runLlm, getModelTag } from "./llm";
 
 type Topic = { id: string; title: string; order: number; description: string };
+type TopicTaxonomy = {
+  level: "A2";
+  selectionPolicy: { wordsPerLesson: number; targetWordsPerTopic: number };
+  topics: Topic[];
+};
 type LessonWord = {
   entryId: string;
   lemma: string;
@@ -17,26 +22,37 @@ type LessonWord = {
   pronunciation?: string;
   example: { es: string; en: string; zh: string };
 };
+type NewLessonWord = Omit<LessonWord, "entryId" | "frequencyBand">;
 export type LanguageLesson = {
   schemaVersion: 1;
   lessonId: string;
   language: "es";
-  level: "A1";
+  level: "A2";
   topicId: string;
   title: string;
   newWordCount: number;
   createdAt: string;
+  source: "llm" | "topic-lexicon";
+  model: string;
+  promptVersion: 2;
+  items: LessonWord[];
+};
+type TopicLexicon = {
+  schemaVersion: 1;
+  topicId: string;
+  title: string;
+  level: "A2";
+  generatedAt: string;
   source: "llm";
   model: string;
-  promptVersion: 1;
+  promptVersion: 2;
   items: LessonWord[];
 };
 
 const TOPICS_PATH = "data/language/topics/taxonomy.json";
 const LESSONS_DIR = "daily_reports/language/lessons";
+const TOPIC_LEXICONS_DIR = "daily_reports/language/topics";
 const USED_WORDS_PATH = "daily_reports/language/used-words.json";
-const WORDS_PER_LESSON = 10;
-const MAX_ATTEMPTS = 2;
 
 type UsedWordIndexEntry = { normalized: string; topicIds: string[] };
 type UsedWordIndex = { version: 1; entries: UsedWordIndexEntry[] };
@@ -54,11 +70,16 @@ function slug(value: string): string {
   return normalizeWord(value).replace(/\s+/g, "-");
 }
 
-function loadTopics(): Topic[] {
-  const data = JSON.parse(fs.readFileSync(TOPICS_PATH, "utf8")) as {
-    topics: Topic[];
-  };
-  return [...data.topics].sort((a, b) => a.order - b.order);
+function loadTaxonomy(): TopicTaxonomy {
+  const data = JSON.parse(fs.readFileSync(TOPICS_PATH, "utf8")) as TopicTaxonomy;
+  if (data.level !== "A2") throw new Error("Spanish topic taxonomy must use level A2.");
+  if (!Number.isInteger(data.selectionPolicy?.wordsPerLesson) || data.selectionPolicy.wordsPerLesson < 1) {
+    throw new Error("Taxonomy wordsPerLesson must be a positive integer.");
+  }
+  if (!Number.isInteger(data.selectionPolicy?.targetWordsPerTopic) || data.selectionPolicy.targetWordsPerTopic < 1) {
+    throw new Error("Taxonomy targetWordsPerTopic must be a positive integer.");
+  }
+  return { ...data, topics: [...data.topics].sort((a, b) => a.order - b.order) };
 }
 
 function loadPreviousLessons(): LanguageLesson[] {
@@ -69,13 +90,21 @@ function loadPreviousLessons(): LanguageLesson[] {
     .map((name) => JSON.parse(fs.readFileSync(path.join(LESSONS_DIR, name), "utf8")) as LanguageLesson);
 }
 
-function addLessonWords(index: Map<string, Set<string>>, lesson: LanguageLesson): void {
-  for (const item of lesson.items ?? []) {
+function loadTopicLexicons(): TopicLexicon[] {
+  if (!fs.existsSync(TOPIC_LEXICONS_DIR)) return [];
+  return fs.readdirSync(TOPIC_LEXICONS_DIR)
+    .filter((name) => name.endsWith(".json"))
+    .sort()
+    .map((name) => JSON.parse(fs.readFileSync(path.join(TOPIC_LEXICONS_DIR, name), "utf8")) as TopicLexicon);
+}
+
+function addWords(index: Map<string, Set<string>>, topicId: string, items: LessonWord[]): void {
+  for (const item of items ?? []) {
     for (const value of [item.lemma, item.term]) {
       const normalized = normalizeWord(value ?? "");
       if (!normalized) continue;
       const topicIds = index.get(normalized) ?? new Set<string>();
-      topicIds.add(lesson.topicId);
+      topicIds.add(topicId);
       index.set(normalized, topicIds);
     }
   }
@@ -83,8 +112,7 @@ function addLessonWords(index: Map<string, Set<string>>, lesson: LanguageLesson)
 
 function buildAndStoreUsedWordIndex(lessons: LanguageLesson[]): Map<string, Set<string>> {
   const index = new Map<string, Set<string>>();
-  for (const lesson of lessons) addLessonWords(index, lesson);
-
+  for (const lesson of lessons) addWords(index, lesson.topicId, lesson.items);
   const serialized: UsedWordIndex = {
     version: 1,
     entries: [...index.entries()]
@@ -100,36 +128,36 @@ function validateResponse(
   value: unknown,
   topics: Topic[],
   usedWords: Set<string>,
-): { topicId: string; items: Array<Omit<LessonWord, "entryId" | "frequencyBand">> } {
+): { topicId: string; items: NewLessonWord[]; skippedDuplicates: number; repairedEntryTypes: number } {
   if (!value || typeof value !== "object") throw new Error("Expected a JSON object.");
   const result = value as Record<string, unknown>;
   const topicId = result.topicId;
-  const topic = topics.find((candidate) => candidate.id === topicId);
-  if (!topic) throw new Error(`Unknown topic: ${String(topicId)}`);
-  if (!Array.isArray(result.items) || result.items.length !== WORDS_PER_LESSON) {
-    throw new Error(`Expected exactly ${WORDS_PER_LESSON} new words.`);
-  }
+  if (!topics.some((candidate) => candidate.id === topicId)) throw new Error(`Unknown topic: ${String(topicId)}`);
+  if (!Array.isArray(result.items)) throw new Error("Expected an items array.");
 
   const seen = new Set<string>();
-  const items = result.items.map((raw, index) => {
+  let skippedDuplicates = 0;
+  let repairedEntryTypes = 0;
+  const items = result.items.flatMap((raw, index): NewLessonWord[] => {
     if (!raw || typeof raw !== "object") throw new Error(`Word ${index + 1} is not an object.`);
     const item = raw as Record<string, unknown>;
     const lemma = typeof item.lemma === "string" ? item.lemma.trim() : "";
     const term = typeof item.term === "string" ? item.term.trim() : "";
     const normalizedLemma = normalizeWord(lemma);
     const normalizedTerm = normalizeWord(term);
-    if (!lemma || !term || !normalizedLemma) throw new Error(`Word ${index + 1} is missing lemma or term.`);
+    if (!lemma || !term || !normalizedLemma || !normalizedTerm) throw new Error(`Word ${index + 1} is missing lemma or term.`);
     if (seen.has(normalizedLemma) || seen.has(normalizedTerm) || usedWords.has(normalizedLemma) || usedWords.has(normalizedTerm)) {
-      throw new Error(`Repeated word: ${lemma}`);
+      skippedDuplicates++;
+      return [];
     }
     seen.add(normalizedLemma);
     seen.add(normalizedTerm);
 
-    const entryType = item.entryType;
+    const entryType = item.entryType === "phrase" ? "phrase" : "word";
+    if (item.entryType !== "word" && item.entryType !== "phrase") repairedEntryTypes++;
     const partOfSpeech = item.partOfSpeech;
     const translation = item.translation as Record<string, unknown> | undefined;
     const example = item.example as Record<string, unknown> | undefined;
-    if (entryType !== "word" && entryType !== "phrase") throw new Error(`Invalid entryType for ${lemma}.`);
     if (typeof partOfSpeech !== "string" || !partOfSpeech.trim()) throw new Error(`Missing part of speech for ${lemma}.`);
     if (typeof translation?.en !== "string" || !translation.en.trim() || typeof translation.zh !== "string" || !translation.zh.trim()) {
       throw new Error(`Missing English/Chinese translation for ${lemma}.`);
@@ -137,28 +165,119 @@ function validateResponse(
     if (typeof example?.es !== "string" || !example.es.trim() || typeof example.en !== "string" || !example.en.trim() || typeof example.zh !== "string" || !example.zh.trim()) {
       throw new Error(`Missing Spanish/English/Chinese example for ${lemma}.`);
     }
-
-    const posSlug = slug(partOfSpeech);
-    return {
-      entryId: `es-${slug(lemma)}-${posSlug}`,
+    return [{
       lemma,
       term,
       entryType,
       partOfSpeech: partOfSpeech.trim(),
       ...(typeof item.gender === "string" && item.gender.trim() ? { gender: item.gender.trim() } : {}),
-      frequencyBand: "high" as const,
       translation: { en: translation.en.trim(), zh: translation.zh.trim() },
       ...(typeof item.pronunciation === "string" && item.pronunciation.trim() ? { pronunciation: item.pronunciation.trim() } : {}),
       example: { es: example.es.trim(), en: example.en.trim(), zh: example.zh.trim() },
-    };
+    }];
   });
-  return { topicId, items };
+  return { topicId: String(topicId), items, skippedDuplicates, repairedEntryTypes };
 }
 
 function atomicWrite(filePath: string, contents: string): void {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
   const tempPath = `${filePath}.tmp`;
   fs.writeFileSync(tempPath, contents, "utf8");
   fs.renameSync(tempPath, filePath);
+}
+
+function readJsonResponse(text: string): unknown {
+  try {
+    return JSON.parse(extractJson(text));
+  } catch {
+    return JSON.parse(jsonrepair(extractJson(text)));
+  }
+}
+
+function collectUsedWords(lessons: LanguageLesson[], lexicons: TopicLexicon[]): Set<string> {
+  const used = new Set<string>();
+  for (const lesson of lessons) for (const item of lesson.items ?? []) {
+    used.add(normalizeWord(item.lemma));
+    used.add(normalizeWord(item.term));
+  }
+  for (const lexicon of lexicons) for (const item of lexicon.items ?? []) {
+    used.add(normalizeWord(item.lemma));
+    used.add(normalizeWord(item.term));
+  }
+  return used;
+}
+
+async function generateTopicLexicon(
+  date: string,
+  topic: Topic,
+  topics: Topic[],
+  alreadyUsed: Set<string>,
+  previousSameTopicItems: LessonWord[],
+  targetWords: number,
+): Promise<TopicLexicon> {
+  const acceptedItems: NewLessonWord[] = [];
+  const excluded = new Set(alreadyUsed);
+  const systemPrompt = [
+    "You are an experienced Spanish teacher building a comprehensive A2 vocabulary list for one topic.",
+    "Select genuinely useful, high-frequency words and short expressions a learner needs at A2 level.",
+    "Order items from most useful/common to less frequent but still necessary at A2 level.",
+    "Prefer canonical singular nouns and infinitive verbs as lemmas; avoid rare, regional-only, technical, and duplicate entries.",
+    "Set entryType to exactly 'word' or 'phrase'. Single lexical entries, including verbs and reflexive verbs, use 'word'.",
+    "Provide natural Spanish examples and accurate English and Simplified Chinese translations.",
+    "Return only one valid JSON object, with no markdown or extra text.",
+  ].join(" ");
+
+  const userPrompt = [
+    `Build the complete stored A2 lexicon for topic '${topic.id}' (${topic.title}): ${topic.description}`,
+    `In one response, provide up to ${targetWords} distinct, useful A2 vocabulary items, ordered from most frequent and practical to less frequent. Include the core vocabulary a learner needs for this topic.`,
+    "Keep every item inside this topic. Do not use any normalized lemma or term from the excluded list.",
+    JSON.stringify([...excluded].sort()),
+    "Use JSON shape: {\"topicId\":\"people\",\"items\":[{\"lemma\":\"...\",\"term\":\"...\",\"entryType\":\"word\",\"partOfSpeech\":\"noun\",\"gender\":\"feminine\",\"translation\":{\"en\":\"...\",\"zh\":\"...\"},\"pronunciation\":\"...\",\"example\":{\"es\":\"...\",\"en\":\"...\",\"zh\":\"...\"}}]}",
+    "Use entryType 'word' or 'phrase'. Include gender only when relevant. Pronunciation may be omitted if uncertain.",
+  ].join("\n");
+  const response = await runLlm({ systemPrompt, userPrompt });
+  const validated = validateResponse(readJsonResponse(response.text), topics, excluded);
+  if (validated.topicId !== topic.id) throw new Error(`Expected topic '${topic.id}', got '${validated.topicId}'.`);
+  acceptedItems.push(...validated.items.slice(0, targetWords));
+  if (validated.repairedEntryTypes > 0) {
+    console.warn(`[language] topic '${topic.id}': defaulted ${validated.repairedEntryTypes} invalid entryType value(s) to 'word'.`);
+  }
+  if (validated.items.length === 0 && previousSameTopicItems.length === 0) {
+    throw new Error(`The model returned no new valid vocabulary entries for topic '${topic.id}'.`);
+  }
+  if (validated.skippedDuplicates > 0) {
+    console.warn(`[language] topic '${topic.id}': skipped ${validated.skippedDuplicates} repeated word(s); saving the unique entries from this response.`);
+  }
+
+  // Keep older daily words in the topic catalog during migration, then append
+  // the newly generated unlearned items in frequency order.
+  const merged = [...previousSameTopicItems];
+  const mergedWords = new Set(merged.flatMap((item) => [normalizeWord(item.lemma), normalizeWord(item.term)]));
+  for (const item of acceptedItems) {
+    const lemma = normalizeWord(item.lemma);
+    const term = normalizeWord(item.term);
+    if (mergedWords.has(lemma) || mergedWords.has(term)) continue;
+    merged.push({ ...item, entryId: `es-${slug(item.lemma)}-${slug(item.partOfSpeech)}`, frequencyBand: "high" });
+    mergedWords.add(lemma);
+    mergedWords.add(term);
+  }
+  if (merged.length < targetWords) {
+    console.warn(`[language] topic '${topic.id}': saved ${merged.length}/${targetWords} target words; this topic will use the saved list without replacement calls.`);
+  }
+  const lexicon: TopicLexicon = {
+    schemaVersion: 1,
+    topicId: topic.id,
+    title: topic.title,
+    level: "A2",
+    generatedAt: date,
+    source: "llm",
+    model: getModelTag(),
+    promptVersion: 2,
+    items: merged,
+  };
+  atomicWrite(path.join(TOPIC_LEXICONS_DIR, `${topic.id}.json`), `${JSON.stringify(lexicon, null, 2)}\n`);
+  console.log(`[language] stored ${lexicon.items.length} A2 words for topic '${topic.title}'.`);
+  return lexicon;
 }
 
 export async function generateAndStoreLanguageLesson(date: string): Promise<LanguageLesson | null> {
@@ -173,84 +292,54 @@ export async function generateAndStoreLanguageLesson(date: string): Promise<Lang
     return existing;
   }
 
-  const topics = loadTopics();
-  const usedWordIndex = buildAndStoreUsedWordIndex(lessons);
-  const usedWords = new Set(usedWordIndex.keys());
+  const taxonomy = loadTaxonomy();
+  const topics = taxonomy.topics;
+  const wordsPerLesson = taxonomy.selectionPolicy.wordsPerLesson;
+  const targetWordsPerTopic = taxonomy.selectionPolicy.targetWordsPerTopic;
+  const lexicons = loadTopicLexicons();
+  const knownCatalogWords = collectUsedWords(lessons, lexicons);
+  const learnedWords = collectUsedWords(lessons, []);
   const latestTopicId = lessons.at(-1)?.topicId;
-  const currentTopicId = latestTopicId;
-  const currentTopic = topics.find((topic) => topic.id === currentTopicId);
-  // Only send exclusions for the topic being continued. The local validator
-  // still checks every topic, so cross-topic repeats cannot be stored.
-  const topicUsedList = [...usedWordIndex.entries()]
-    .filter(([, topicIds]) => topicIds.has(currentTopicId ?? ""))
-    .map(([word]) => word)
-    .sort();
-  const topicList = topics.map((topic) => `${topic.id}: ${topic.description}`).join("\n");
-  const systemPrompt = [
-    "You are an experienced Spanish teacher creating a short A1 vocabulary lesson for a beginner.",
-    "Choose useful, genuinely common Spanish words or short expressions, all within exactly one topic.",
-    "Do not reuse a word or expression in the excluded list. Prefer canonical singular nouns and infinitive verbs as lemmas.",
-    "Provide natural Spanish examples and accurate English and Simplified Chinese translations.",
-    "Return only one valid JSON object, with no markdown or extra text.",
-  ].join(" ");
+  const latestTopicIndex = topics.findIndex((topic) => topic.id === latestTopicId);
+  const startIndex = latestTopicIndex < 0 ? 0 : latestTopicIndex;
 
-  let lastError: unknown;
-  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-    const retryHint = lastError ? `\n\nPrevious response was rejected: ${lastError instanceof Error ? lastError.message : String(lastError)}. Return a corrected lesson.` : "";
-    const userPrompt = [
-      `Create exactly ${WORDS_PER_LESSON} new Spanish A1 vocabulary items for the lesson dated ${date}.`,
-      "",
-      "Available topics (choose one topicId only):",
-      topicList,
-      "",
-      currentTopic
-        ? `Topic continuity: continue with '${currentTopic.id}' if you can provide 10 useful, high-frequency A1 items. Excluded words below cover this topic only. If you must choose another topic, still choose one that fits all 10 items.`
-        : "Start with the first suitable topic in the listed order.",
-      "Every item must be within the one chosen topic. Frequency should reflect common beginner usage; avoid rare, technical, regional-only, or overly specific vocabulary.",
-      currentTopic
-        ? `Do not include any normalized lemma or term from this topic's excluded list (${currentTopic.id}):`
-        : "Do not repeat items within the lesson.",
-      JSON.stringify(topicUsedList),
-      "",
-      "Return JSON matching this shape:",
-      '{"topicId":"people","items":[{"lemma":"persona","term":"la persona","entryType":"word","partOfSpeech":"noun","gender":"feminine","translation":{"en":"person","zh":"人"},"pronunciation":"/peɾˈsona/","example":{"es":"...","en":"...","zh":"..."}}]}',
-      "Use entryType 'word' or 'phrase'. Include gender only when relevant. Pronunciation may be omitted if uncertain. Exactly 10 items are required.",
-      retryHint,
-    ].join("\n");
-
-    try {
-      const { text } = await runLlm({ systemPrompt, userPrompt });
-      let parsed: unknown;
-      try {
-        parsed = JSON.parse(extractJson(text));
-      } catch {
-        parsed = JSON.parse(jsonrepair(extractJson(text)));
+  for (const topic of [...topics.slice(startIndex), ...topics.slice(0, startIndex)]) {
+    const historicalTopicItems = lessons
+      .filter((lesson) => lesson.topicId === topic.id)
+      .flatMap((lesson) => lesson.items);
+    let lexicon = lexicons.find((candidate) => candidate.topicId === topic.id);
+    if (!lexicon) {
+      const usedOutsideTopic = new Set(knownCatalogWords);
+      for (const item of historicalTopicItems) {
+        usedOutsideTopic.delete(normalizeWord(item.lemma));
+        usedOutsideTopic.delete(normalizeWord(item.term));
       }
-      const validated = validateResponse(parsed, topics, usedWords);
-      const topic = topics.find((candidate) => candidate.id === validated.topicId)!;
-      const lesson: LanguageLesson = {
-        schemaVersion: 1,
-        lessonId: `es-${date}-${topic.id}`,
-        language: "es",
-        level: "A1",
-        topicId: topic.id,
-        title: topic.title,
-        newWordCount: validated.items.length,
-        createdAt: date,
-        source: "llm",
-        model: getModelTag(),
-        promptVersion: 1,
-        items: validated.items,
-      };
-      atomicWrite(outputPath, `${JSON.stringify(lesson, null, 2)}\n`);
-      buildAndStoreUsedWordIndex([...lessons, lesson]);
-      console.log(`[language] saved ${lesson.items.length} new words for '${lesson.title}' to ${outputPath}.`);
-      return lesson;
-    } catch (error) {
-      lastError = error;
-      console.warn(`[language] generation attempt ${attempt}/${MAX_ATTEMPTS} failed: ${error instanceof Error ? error.message : String(error)}`);
+      lexicon = await generateTopicLexicon(date, topic, topics, usedOutsideTopic, historicalTopicItems, targetWordsPerTopic);
     }
+    const items = lexicon.items.filter((item) =>
+      !learnedWords.has(normalizeWord(item.lemma)) && !learnedWords.has(normalizeWord(item.term))
+    ).slice(0, wordsPerLesson);
+    if (items.length === 0) continue;
+
+    const lesson: LanguageLesson = {
+      schemaVersion: 1,
+      lessonId: `es-${date}-${topic.id}`,
+      language: "es",
+      level: "A2",
+      topicId: topic.id,
+      title: topic.title,
+      newWordCount: items.length,
+      createdAt: date,
+      source: "topic-lexicon",
+      model: lexicon.model,
+      promptVersion: 2,
+      items,
+    };
+    atomicWrite(outputPath, `${JSON.stringify(lesson, null, 2)}\n`);
+    buildAndStoreUsedWordIndex([...lessons, lesson]);
+    console.log(`[language] saved ${items.length} new words from '${topic.title}' to ${outputPath}.`);
+    return lesson;
   }
 
-  throw lastError instanceof Error ? lastError : new Error(String(lastError));
+  throw new Error("All configured Spanish A2 topic vocabularies are exhausted. Add another topic to the taxonomy.");
 }
