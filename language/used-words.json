@@ -14,6 +14,18 @@
       ]
     },
     {
+      "normalized": "alta",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "alto",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
       "normalized": "amiga",
       "topicIds": [
         "people"
@@ -21,6 +33,12 @@
     },
     {
       "normalized": "amigo",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "caracteristica",
       "topicIds": [
         "people"
       ]
@@ -200,6 +218,12 @@
       ]
     },
     {
+      "normalized": "nina",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
       "normalized": "nino",
       "topicIds": [
         "people"
@@ -212,7 +236,19 @@
       ]
     },
     {
+      "normalized": "pareja",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
       "normalized": "persona",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "personalidad",
       "topicIds": [
         "people"
       ]
@@ -230,6 +266,24 @@
       ]
     },
     {
+      "normalized": "puntual",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "simpatica",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "simpatico",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
       "normalized": "tia",
       "topicIds": [
         "people"
@@ -237,6 +291,12 @@
     },
     {
       "normalized": "tio",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "trabajo",
       "topicIds": [
         "people"
       ]

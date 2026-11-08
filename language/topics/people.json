@@ -1,0 +1,779 @@
+{
+  "schemaVersion": 1,
+  "topicId": "people",
+  "title": "People",
+  "level": "A2",
+  "generatedAt": "2026-11-08",
+  "source": "llm",
+  "model": "openai-gpt-4o-mini",
+  "promptVersion": 2,
+  "items": [
+    {
+      "entryId": "es-persona-noun",
+      "lemma": "persona",
+      "term": "la persona",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "person",
+        "zh": "人"
+      },
+      "example": {
+        "es": "Ella es una buena persona.",
+        "en": "She is a good person.",
+        "zh": "她是一个好人。"
+      }
+    },
+    {
+      "entryId": "es-nombre-noun",
+      "lemma": "nombre",
+      "term": "el nombre",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "name",
+        "zh": "名字"
+      },
+      "example": {
+        "es": "¿Cuál es tu nombre?",
+        "en": "What is your name?",
+        "zh": "你叫什么名字？"
+      }
+    },
+    {
+      "entryId": "es-amigo-noun",
+      "lemma": "amigo",
+      "term": "el amigo",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "friend",
+        "zh": "朋友"
+      },
+      "example": {
+        "es": "Mi amigo se llama Juan.",
+        "en": "My friend's name is Juan.",
+        "zh": "我的朋友叫胡安。"
+      }
+    },
+    {
+      "entryId": "es-amiga-noun",
+      "lemma": "amiga",
+      "term": "la amiga",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "friend",
+        "zh": "朋友"
+      },
+      "example": {
+        "es": "Ella es mi amiga.",
+        "en": "She is my friend.",
+        "zh": "她是我的朋友。"
+      }
+    },
+    {
+      "entryId": "es-familia-noun",
+      "lemma": "familia",
+      "term": "la familia",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "family",
+        "zh": "家人"
+      },
+      "example": {
+        "es": "La familia es importante.",
+        "en": "Family is important.",
+        "zh": "家庭是重要的。"
+      }
+    },
+    {
+      "entryId": "es-hombre-noun",
+      "lemma": "hombre",
+      "term": "el hombre",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "man",
+        "zh": "男"
+      },
+      "example": {
+        "es": "Él es un hombre alto.",
+        "en": "He is a tall man.",
+        "zh": "他是一个高个子男。"
+      }
+    },
+    {
+      "entryId": "es-mujer-noun",
+      "lemma": "mujer",
+      "term": "la mujer",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "woman",
+        "zh": "女"
+      },
+      "example": {
+        "es": "Ella es una mujer inteligente.",
+        "en": "She is an intelligent woman.",
+        "zh": "她是一个聪明的女人。"
+      }
+    },
+    {
+      "entryId": "es-esposa-noun",
+      "lemma": "esposa",
+      "term": "la esposa",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "wife",
+        "zh": "妻子"
+      },
+      "example": {
+        "es": "Mi esposa es muy amable.",
+        "en": "My wife is very kind.",
+        "zh": "我的妻子很善良。"
+      }
+    },
+    {
+      "entryId": "es-esposo-noun",
+      "lemma": "esposo",
+      "term": "el esposo",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "husband",
+        "zh": "丈夫"
+      },
+      "example": {
+        "es": "Su esposo trabaja mucho.",
+        "en": "Her husband works a lot.",
+        "zh": "她的丈夫工作很忙。"
+      }
+    },
+    {
+      "entryId": "es-nino-noun",
+      "lemma": "niño",
+      "term": "el niño",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "boy",
+        "zh": "男孩"
+      },
+      "example": {
+        "es": "El niño juega en el parque.",
+        "en": "The boy is playing in the park.",
+        "zh": "那个男孩在公园里玩。"
+      }
+    },
+    {
+      "entryId": "es-chica-noun",
+      "lemma": "chica",
+      "term": "la chica",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "girl",
+        "zh": "女孩"
+      },
+      "example": {
+        "es": "La chica es alta.",
+        "en": "The girl is tall.",
+        "zh": "这个女孩很高。"
+      }
+    },
+    {
+      "entryId": "es-chico-noun",
+      "lemma": "chico",
+      "term": "el chico",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "boy",
+        "zh": "男孩"
+      },
+      "example": {
+        "es": "El chico es simpático.",
+        "en": "The boy is friendly.",
+        "zh": "这个男孩很友好。"
+      }
+    },
+    {
+      "entryId": "es-abuelo-noun",
+      "lemma": "abuelo",
+      "term": "el abuelo",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "grandfather",
+        "zh": "爷爷"
+      },
+      "example": {
+        "es": "Mi abuelo es viejo.",
+        "en": "My grandfather is old.",
+        "zh": "我的爷爷很老。"
+      }
+    },
+    {
+      "entryId": "es-abuela-noun",
+      "lemma": "abuela",
+      "term": "la abuela",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "grandmother",
+        "zh": "奶奶"
+      },
+      "example": {
+        "es": "La abuela cocina bien.",
+        "en": "Grandmother cooks well.",
+        "zh": "奶奶做饭很好。"
+      }
+    },
+    {
+      "entryId": "es-hermano-noun",
+      "lemma": "hermano",
+      "term": "el hermano",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "brother",
+        "zh": "兄弟"
+      },
+      "example": {
+        "es": "Mi hermano tiene diez años.",
+        "en": "My brother is ten years old.",
+        "zh": "我的兄弟十岁。"
+      }
+    },
+    {
+      "entryId": "es-hermana-noun",
+      "lemma": "hermana",
+      "term": "la hermana",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "sister",
+        "zh": "姐妹"
+      },
+      "example": {
+        "es": "Mi hermana es estudiante.",
+        "en": "My sister is a student.",
+        "zh": "我的姐妹是学生。"
+      }
+    },
+    {
+      "entryId": "es-tio-noun",
+      "lemma": "tío",
+      "term": "el tío",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "uncle",
+        "zh": "叔叔"
+      },
+      "example": {
+        "es": "El tío vive en España.",
+        "en": "The uncle lives in Spain.",
+        "zh": "这位叔叔住在西班牙。"
+      }
+    },
+    {
+      "entryId": "es-tia-noun",
+      "lemma": "tía",
+      "term": "la tía",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "aunt",
+        "zh": "阿姨"
+      },
+      "example": {
+        "es": "La tía trabaja en el hospital.",
+        "en": "The aunt works in the hospital.",
+        "zh": "这位阿姨在医院工作。"
+      }
+    },
+    {
+      "entryId": "es-primo-noun",
+      "lemma": "primo",
+      "term": "el primo",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "cousin (male)",
+        "zh": "表兄弟"
+      },
+      "example": {
+        "es": "Mi primo juega al fútbol.",
+        "en": "My cousin plays football.",
+        "zh": "我的表兄弟踢足球。"
+      }
+    },
+    {
+      "entryId": "es-prima-noun",
+      "lemma": "prima",
+      "term": "la prima",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "frequencyBand": "high",
+      "translation": {
+        "en": "cousin (female)",
+        "zh": "表姐妹"
+      },
+      "example": {
+        "es": "Mi prima es artística.",
+        "en": "My cousin is artistic.",
+        "zh": "我的表姐妹很有艺术天赋。"
+      }
+    },
+    {
+      "lemma": "niña",
+      "term": "niña",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "translation": {
+        "en": "girl",
+        "zh": "女孩"
+      },
+      "example": {
+        "es": "La niña canta bien.",
+        "en": "The girl sings well.",
+        "zh": "这个女孩唱得很好。"
+      },
+      "entryId": "es-nina-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "trabajo",
+      "term": "trabajo",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "translation": {
+        "en": "work",
+        "zh": "工作"
+      },
+      "example": {
+        "es": "Mi trabajo es interesante.",
+        "en": "My work is interesting.",
+        "zh": "我的工作很有趣。"
+      },
+      "entryId": "es-trabajo-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "pareja",
+      "term": "pareja",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "translation": {
+        "en": "partner",
+        "zh": "伴侣"
+      },
+      "example": {
+        "es": "Ella es mi pareja.",
+        "en": "She is my partner.",
+        "zh": "她是我的伴侣。"
+      },
+      "entryId": "es-pareja-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "característica",
+      "term": "característica",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "translation": {
+        "en": "characteristic",
+        "zh": "特征"
+      },
+      "example": {
+        "es": "La honestidad es una buena característica.",
+        "en": "Honesty is a good characteristic.",
+        "zh": "诚实是一个好的特征。"
+      },
+      "entryId": "es-caracteristica-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "personalidad",
+      "term": "personalidad",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "translation": {
+        "en": "personality",
+        "zh": "个性"
+      },
+      "example": {
+        "es": "Su personalidad es amable.",
+        "en": "Her personality is kind.",
+        "zh": "她的个性很友好。"
+      },
+      "entryId": "es-personalidad-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "puntual",
+      "term": "puntual",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "translation": {
+        "en": "punctual",
+        "zh": "守时的"
+      },
+      "example": {
+        "es": "Eres muy puntual.",
+        "en": "You are very punctual.",
+        "zh": "你很守时。"
+      },
+      "entryId": "es-puntual-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "simpático",
+      "term": "simpático",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "gender": "masculine",
+      "translation": {
+        "en": "nice",
+        "zh": "友好的"
+      },
+      "example": {
+        "es": "Él es simpático y divertido.",
+        "en": "He is nice and fun.",
+        "zh": "他很友好和有趣。"
+      },
+      "entryId": "es-simpatico-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "simpática",
+      "term": "simpática",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "gender": "feminine",
+      "translation": {
+        "en": "nice",
+        "zh": "友好的"
+      },
+      "example": {
+        "es": "Ella es simpática y considerada.",
+        "en": "She is nice and considerate.",
+        "zh": "她友好且体贴。"
+      },
+      "entryId": "es-simpatica-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "alto",
+      "term": "alto",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "gender": "masculine",
+      "translation": {
+        "en": "tall",
+        "zh": "高的"
+      },
+      "example": {
+        "es": "Él es alto y delgado.",
+        "en": "He is tall and thin.",
+        "zh": "他高而瘦。"
+      },
+      "entryId": "es-alto-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "alta",
+      "term": "alta",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "gender": "feminine",
+      "translation": {
+        "en": "tall",
+        "zh": "高的"
+      },
+      "example": {
+        "es": "Ella es alta y fuerte.",
+        "en": "She is tall and strong.",
+        "zh": "她高而强壮。"
+      },
+      "entryId": "es-alta-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "bajo",
+      "term": "bajo",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "gender": "masculine",
+      "translation": {
+        "en": "short",
+        "zh": "矮的"
+      },
+      "example": {
+        "es": "Él es bajo y alegre.",
+        "en": "He is short and cheerful.",
+        "zh": "他矮而快乐。"
+      },
+      "entryId": "es-bajo-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "baja",
+      "term": "baja",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "gender": "feminine",
+      "translation": {
+        "en": "short",
+        "zh": "矮的"
+      },
+      "example": {
+        "es": "Ella es baja pero talentosa.",
+        "en": "She is short but talented.",
+        "zh": "她矮但有才华。"
+      },
+      "entryId": "es-baja-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "ojos",
+      "term": "ojos",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "translation": {
+        "en": "eyes",
+        "zh": "眼睛"
+      },
+      "example": {
+        "es": "Tiene ojos azules.",
+        "en": "She has blue eyes.",
+        "zh": "她有蓝色的眼睛。"
+      },
+      "entryId": "es-ojos-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "pelo",
+      "term": "pelo",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "translation": {
+        "en": "hair",
+        "zh": "头发"
+      },
+      "example": {
+        "es": "Él tiene el pelo corto.",
+        "en": "He has short hair.",
+        "zh": "他留着短发。"
+      },
+      "entryId": "es-pelo-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "rojo",
+      "term": "rojo",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "translation": {
+        "en": "red",
+        "zh": "红色的"
+      },
+      "example": {
+        "es": "Ella tiene un coche rojo.",
+        "en": "She has a red car.",
+        "zh": "她有一辆红色的车。"
+      },
+      "entryId": "es-rojo-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "cualidades",
+      "term": "cualidades",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "translation": {
+        "en": "qualities",
+        "zh": "品质"
+      },
+      "example": {
+        "es": "Me gustan sus cualidades.",
+        "en": "I like her qualities.",
+        "zh": "我喜欢她的品质。"
+      },
+      "entryId": "es-cualidades-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "interesante",
+      "term": "interesante",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "translation": {
+        "en": "interesting",
+        "zh": "有趣的"
+      },
+      "example": {
+        "es": "El libro es interesante.",
+        "en": "The book is interesting.",
+        "zh": "这本书很有趣。"
+      },
+      "entryId": "es-interesante-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "cerca",
+      "term": "cerca",
+      "entryType": "word",
+      "partOfSpeech": "adverb",
+      "translation": {
+        "en": "near",
+        "zh": "靠近"
+      },
+      "example": {
+        "es": "Vivo cerca de la escuela.",
+        "en": "I live near the school.",
+        "zh": "我住在学校附近。"
+      },
+      "entryId": "es-cerca-adverb",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "confianza",
+      "term": "confianza",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "translation": {
+        "en": "trust",
+        "zh": "信任"
+      },
+      "example": {
+        "es": "Confío en ella.",
+        "en": "I trust her.",
+        "zh": "我相信她。"
+      },
+      "entryId": "es-confianza-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "relación",
+      "term": "relación",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "translation": {
+        "en": "relationship",
+        "zh": "关系"
+      },
+      "example": {
+        "es": "Tienen una buena relación.",
+        "en": "They have a good relationship.",
+        "zh": "他们有很好的关系。"
+      },
+      "entryId": "es-relacion-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "diferente",
+      "term": "diferente",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "translation": {
+        "en": "different",
+        "zh": "不同的"
+      },
+      "example": {
+        "es": "Es una persona diferente.",
+        "en": "He/She is a different person.",
+        "zh": "他/她是一个不同的人。"
+      },
+      "entryId": "es-diferente-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "grande",
+      "term": "grande",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "translation": {
+        "en": "big",
+        "zh": "大的"
+      },
+      "example": {
+        "es": "Tiene una familia grande.",
+        "en": "He/She has a big family.",
+        "zh": "他/她有一个大家庭。"
+      },
+      "entryId": "es-grande-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "alegre",
+      "term": "alegre",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "translation": {
+        "en": "cheerful",
+        "zh": "快乐的"
+      },
+      "example": {
+        "es": "Ella es una persona alegre.",
+        "en": "She is a cheerful person.",
+        "zh": "她是一个快乐的人。"
+      },
+      "entryId": "es-alegre-adjective",
+      "frequencyBand": "high"
+    }
+  ]
+}

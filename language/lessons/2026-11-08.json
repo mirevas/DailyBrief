@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "es-2026-11-08-people",
+  "language": "es",
+  "level": "A2",
+  "topicId": "people",
+  "title": "People",
+  "newWordCount": 10,
+  "createdAt": "2026-11-08",
+  "source": "topic-lexicon",
+  "model": "openai-gpt-4o-mini",
+  "promptVersion": 2,
+  "items": [
+    {
+      "lemma": "niña",
+      "term": "niña",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "translation": {
+        "en": "girl",
+        "zh": "女孩"
+      },
+      "example": {
+        "es": "La niña canta bien.",
+        "en": "The girl sings well.",
+        "zh": "这个女孩唱得很好。"
+      },
+      "entryId": "es-nina-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "trabajo",
+      "term": "trabajo",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "translation": {
+        "en": "work",
+        "zh": "工作"
+      },
+      "example": {
+        "es": "Mi trabajo es interesante.",
+        "en": "My work is interesting.",
+        "zh": "我的工作很有趣。"
+      },
+      "entryId": "es-trabajo-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "pareja",
+      "term": "pareja",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "translation": {
+        "en": "partner",
+        "zh": "伴侣"
+      },
+      "example": {
+        "es": "Ella es mi pareja.",
+        "en": "She is my partner.",
+        "zh": "她是我的伴侣。"
+      },
+      "entryId": "es-pareja-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "característica",
+      "term": "característica",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "translation": {
+        "en": "characteristic",
+        "zh": "特征"
+      },
+      "example": {
+        "es": "La honestidad es una buena característica.",
+        "en": "Honesty is a good characteristic.",
+        "zh": "诚实是一个好的特征。"
+      },
+      "entryId": "es-caracteristica-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "personalidad",
+      "term": "personalidad",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "translation": {
+        "en": "personality",
+        "zh": "个性"
+      },
+      "example": {
+        "es": "Su personalidad es amable.",
+        "en": "Her personality is kind.",
+        "zh": "她的个性很友好。"
+      },
+      "entryId": "es-personalidad-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "puntual",
+      "term": "puntual",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "translation": {
+        "en": "punctual",
+        "zh": "守时的"
+      },
+      "example": {
+        "es": "Eres muy puntual.",
+        "en": "You are very punctual.",
+        "zh": "你很守时。"
+      },
+      "entryId": "es-puntual-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "simpático",
+      "term": "simpático",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "gender": "masculine",
+      "translation": {
+        "en": "nice",
+        "zh": "友好的"
+      },
+      "example": {
+        "es": "Él es simpático y divertido.",
+        "en": "He is nice and fun.",
+        "zh": "他很友好和有趣。"
+      },
+      "entryId": "es-simpatico-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "simpática",
+      "term": "simpática",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "gender": "feminine",
+      "translation": {
+        "en": "nice",
+        "zh": "友好的"
+      },
+      "example": {
+        "es": "Ella es simpática y considerada.",
+        "en": "She is nice and considerate.",
+        "zh": "她友好且体贴。"
+      },
+      "entryId": "es-simpatica-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "alto",
+      "term": "alto",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "gender": "masculine",
+      "translation": {
+        "en": "tall",
+        "zh": "高的"
+      },
+      "example": {
+        "es": "Él es alto y delgado.",
+        "en": "He is tall and thin.",
+        "zh": "他高而瘦。"
+      },
+      "entryId": "es-alto-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "alta",
+      "term": "alta",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "gender": "feminine",
+      "translation": {
+        "en": "tall",
+        "zh": "高的"
+      },
+      "example": {
+        "es": "Ella es alta y fuerte.",
+        "en": "She is tall and strong.",
+        "zh": "她高而强壮。"
+      },
+      "entryId": "es-alta-adjective",
+      "frequencyBand": "high"
+    }
+  ]
+}
