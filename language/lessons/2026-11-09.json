@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "es-2026-11-09-people",
+  "language": "es",
+  "level": "A2",
+  "topicId": "people",
+  "title": "People",
+  "newWordCount": 10,
+  "createdAt": "2026-11-09",
+  "source": "topic-lexicon",
+  "model": "openai-gpt-4o-mini",
+  "promptVersion": 2,
+  "items": [
+    {
+      "lemma": "bajo",
+      "term": "bajo",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "gender": "masculine",
+      "translation": {
+        "en": "short",
+        "zh": "矮的"
+      },
+      "example": {
+        "es": "Él es bajo y alegre.",
+        "en": "He is short and cheerful.",
+        "zh": "他矮而快乐。"
+      },
+      "entryId": "es-bajo-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "baja",
+      "term": "baja",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "gender": "feminine",
+      "translation": {
+        "en": "short",
+        "zh": "矮的"
+      },
+      "example": {
+        "es": "Ella es baja pero talentosa.",
+        "en": "She is short but talented.",
+        "zh": "她矮但有才华。"
+      },
+      "entryId": "es-baja-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "ojos",
+      "term": "ojos",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "translation": {
+        "en": "eyes",
+        "zh": "眼睛"
+      },
+      "example": {
+        "es": "Tiene ojos azules.",
+        "en": "She has blue eyes.",
+        "zh": "她有蓝色的眼睛。"
+      },
+      "entryId": "es-ojos-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "pelo",
+      "term": "pelo",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "masculine",
+      "translation": {
+        "en": "hair",
+        "zh": "头发"
+      },
+      "example": {
+        "es": "Él tiene el pelo corto.",
+        "en": "He has short hair.",
+        "zh": "他留着短发。"
+      },
+      "entryId": "es-pelo-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "rojo",
+      "term": "rojo",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "translation": {
+        "en": "red",
+        "zh": "红色的"
+      },
+      "example": {
+        "es": "Ella tiene un coche rojo.",
+        "en": "She has a red car.",
+        "zh": "她有一辆红色的车。"
+      },
+      "entryId": "es-rojo-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "cualidades",
+      "term": "cualidades",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "translation": {
+        "en": "qualities",
+        "zh": "品质"
+      },
+      "example": {
+        "es": "Me gustan sus cualidades.",
+        "en": "I like her qualities.",
+        "zh": "我喜欢她的品质。"
+      },
+      "entryId": "es-cualidades-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "interesante",
+      "term": "interesante",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "translation": {
+        "en": "interesting",
+        "zh": "有趣的"
+      },
+      "example": {
+        "es": "El libro es interesante.",
+        "en": "The book is interesting.",
+        "zh": "这本书很有趣。"
+      },
+      "entryId": "es-interesante-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "cerca",
+      "term": "cerca",
+      "entryType": "word",
+      "partOfSpeech": "adverb",
+      "translation": {
+        "en": "near",
+        "zh": "靠近"
+      },
+      "example": {
+        "es": "Vivo cerca de la escuela.",
+        "en": "I live near the school.",
+        "zh": "我住在学校附近。"
+      },
+      "entryId": "es-cerca-adverb",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "confianza",
+      "term": "confianza",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "translation": {
+        "en": "trust",
+        "zh": "信任"
+      },
+      "example": {
+        "es": "Confío en ella.",
+        "en": "I trust her.",
+        "zh": "我相信她。"
+      },
+      "entryId": "es-confianza-noun",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "relación",
+      "term": "relación",
+      "entryType": "word",
+      "partOfSpeech": "noun",
+      "gender": "feminine",
+      "translation": {
+        "en": "relationship",
+        "zh": "关系"
+      },
+      "example": {
+        "es": "Tienen una buena relación.",
+        "en": "They have a good relationship.",
+        "zh": "他们有很好的关系。"
+      },
+      "entryId": "es-relacion-noun",
+      "frequencyBand": "high"
+    }
+  ]
+}

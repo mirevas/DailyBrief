@@ -38,7 +38,25 @@
       ]
     },
     {
+      "normalized": "baja",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "bajo",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
       "normalized": "caracteristica",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "cerca",
       "topicIds": [
         "people"
       ]
@@ -51,6 +69,18 @@
     },
     {
       "normalized": "chico",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "confianza",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "cualidades",
       "topicIds": [
         "people"
       ]
@@ -152,6 +182,12 @@
       ]
     },
     {
+      "normalized": "interesante",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
       "normalized": "la abuela",
       "topicIds": [
         "people"
@@ -236,7 +272,19 @@
       ]
     },
     {
+      "normalized": "ojos",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
       "normalized": "pareja",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "pelo",
       "topicIds": [
         "people"
       ]
@@ -267,6 +315,18 @@
     },
     {
       "normalized": "puntual",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "relacion",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "rojo",
       "topicIds": [
         "people"
       ]
