@@ -14,6 +14,12 @@
       ]
     },
     {
+      "normalized": "alegre",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
       "normalized": "alta",
       "topicIds": [
         "people"
@@ -81,6 +87,12 @@
     },
     {
       "normalized": "cualidades",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "diferente",
       "topicIds": [
         "people"
       ]
@@ -159,6 +171,12 @@
     },
     {
       "normalized": "familia",
+      "topicIds": [
+        "people"
+      ]
+    },
+    {
+      "normalized": "grande",
       "topicIds": [
         "people"
       ]

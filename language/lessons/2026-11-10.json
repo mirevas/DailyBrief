@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "es-2026-11-10-people",
+  "language": "es",
+  "level": "A2",
+  "topicId": "people",
+  "title": "People",
+  "newWordCount": 3,
+  "createdAt": "2026-11-10",
+  "source": "topic-lexicon",
+  "model": "openai-gpt-4o-mini",
+  "promptVersion": 2,
+  "items": [
+    {
+      "lemma": "diferente",
+      "term": "diferente",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "translation": {
+        "en": "different",
+        "zh": "不同的"
+      },
+      "example": {
+        "es": "Es una persona diferente.",
+        "en": "He/She is a different person.",
+        "zh": "他/她是一个不同的人。"
+      },
+      "entryId": "es-diferente-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "grande",
+      "term": "grande",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "translation": {
+        "en": "big",
+        "zh": "大的"
+      },
+      "example": {
+        "es": "Tiene una familia grande.",
+        "en": "He/She has a big family.",
+        "zh": "他/她有一个大家庭。"
+      },
+      "entryId": "es-grande-adjective",
+      "frequencyBand": "high"
+    },
+    {
+      "lemma": "alegre",
+      "term": "alegre",
+      "entryType": "word",
+      "partOfSpeech": "adjective",
+      "translation": {
+        "en": "cheerful",
+        "zh": "快乐的"
+      },
+      "example": {
+        "es": "Ella es una persona alegre.",
+        "en": "She is a cheerful person.",
+        "zh": "她是一个快乐的人。"
+      },
+      "entryId": "es-alegre-adjective",
+      "frequencyBand": "high"
+    }
+  ]
+}
